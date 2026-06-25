@@ -33,7 +33,8 @@ export default function Contatti() {
           >
             <MapPin size={22} className="text-steel mb-3" aria-hidden="true" />
             <p className="font-semibold text-navy text-sm">Dove</p>
-            <p className="text-sm text-navy/60 mt-1">{site.address}</p>
+            <p className="text-sm text-navy/60 mt-1">presso Radici di Loto Studio di Psicologia e Psicoterapia</p>
+            <p className="text-xs text-navy/40 mt-0.5">{site.address}</p>
           </a>
           <a
             href={`tel:${site.phoneHref}`}
@@ -81,7 +82,7 @@ export default function Contatti() {
       </section>
 
       {/* 2. PRENOTAZIONE sotto */}
-      <section className="py-16 px-4 sm:px-6">
+      <section id="prenotazione" className="py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2 justify-center mb-2">
             <CalendarDays size={22} className="text-steel" aria-hidden="true" />
