@@ -50,7 +50,7 @@ export default function Navbar() {
           <li>
             <Link
               href="/contatti"
-              className="bg-steel text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-navy transition-colors duration-200 cursor-pointer"
+              className="press bg-steel text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-navy cursor-pointer"
             >
               Prenota
             </Link>

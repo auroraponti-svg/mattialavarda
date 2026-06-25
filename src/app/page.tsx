@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Activity, Brain, PersonStanding, Dumbbell, HeartPulse, Baby, CheckCircle, ArrowRight } from "lucide-react";
 import { site } from "@/lib/site";
+import Reveal from "@/components/Reveal";
 
 const trattamenti = [
   { icon: Activity, titolo: "Dolori muscoloscheletrici", desc: "Cervicalgie, lombalgie, dolori articolari e tensioni muscolari trattati con tecniche manuali mirate." },
@@ -36,13 +37,13 @@ export default function Home() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contatti"
-                className="bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy transition-colors duration-200 cursor-pointer flex items-center gap-2"
+                className="press bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy cursor-pointer flex items-center gap-2"
               >
                 Prenota una visita <ArrowRight size={18} aria-hidden="true" />
               </Link>
               <Link
                 href="/chi-sono"
-                className="bg-white text-steel font-semibold px-6 py-3 rounded-lg border border-steel/30 hover:border-steel transition-colors duration-200 cursor-pointer"
+                className="press bg-white text-steel font-semibold px-6 py-3 rounded-lg border border-steel/30 hover:border-steel cursor-pointer"
               >
                 Scopri chi sono
               </Link>
@@ -74,17 +75,18 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trattamenti.map(({ icon: Icon, titolo, desc }) => (
-              <div
+            {trattamenti.map(({ icon: Icon, titolo, desc }, i) => (
+              <Reveal
                 key={titolo}
-                className="bg-white rounded-xl p-6 shadow-sm border border-navy/10 hover:border-steel/40 hover:shadow-md transition-all duration-200"
+                delay={(i % 3) * 70}
+                className="lift bg-white rounded-xl p-6 shadow-sm border border-navy/10 hover:border-steel/40 hover:shadow-md"
               >
                 <div className="w-11 h-11 bg-steel/10 rounded-lg flex items-center justify-center mb-4">
                   <Icon size={22} className="text-steel" aria-hidden="true" />
                 </div>
                 <h3 className="font-semibold text-navy mb-2">{titolo}</h3>
                 <p className="text-sm text-navy/60 leading-relaxed">{desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -111,7 +113,7 @@ export default function Home() {
           </p>
           <Link
             href="/contatti"
-            className="bg-white text-navy font-semibold px-8 py-3 rounded-lg hover:bg-mist transition-colors duration-200 cursor-pointer inline-flex items-center gap-2"
+            className="press bg-white text-navy font-semibold px-8 py-3 rounded-lg hover:bg-mist cursor-pointer inline-flex items-center gap-2"
           >
             Prenota ora <ArrowRight size={18} aria-hidden="true" />
           </Link>

@@ -16,6 +16,56 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Easing curves (Emil Kowalski) — built-in CSS easings are too weak */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Scroll reveal: GPU-only (opacity + transform), entrance = ease-out */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+  will-change: opacity, transform;
+}
+.reveal[data-show="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Press feedback — buttons must feel responsive */
+.press {
+  transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Hover lift, gated to real pointers (no false positives on touch) */
+@media (hover: hover) and (pointer: fine) {
+  .lift {
+    transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out), border-color 200ms ease;
+  }
+  .lift:hover {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .press:active {
+    transform: none;
+  }
+  .lift:hover {
+    transform: none;
+  }
+}
+
 /* Rendered blog content */
 .prose-content {
   color: #2B2E54;
@@ -55,8 +105,8 @@ html {
   height: auto;
 }
 .prose-content blockquote {
-  border-left: 4px solid #7FB1DC;
-  padding-left: 1rem;
+  border-left: 2px solid #AFD2EF;
+  padding: 0.25rem 0 0.25rem 1.15rem;
   color: #3F6FA0;
   font-style: italic;
   margin: 1.5rem 0;
