@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-// [cx, cy, rx, ry, trigger] — dal basso verso l'alto
-const STONES: [number, number, number, number, number][] = [
-  [50, 430, 43, 13, 0.04],
-  [47, 395, 35, 11, 0.11],
-  [53, 362, 39, 12, 0.18],
-  [50, 328, 27,  9, 0.25],
-  [48, 298, 33, 10, 0.32],
-  [52, 271, 21,  7, 0.39],
-  [50, 250, 15,  5, 0.46],
+// Sassi impilati: cy calcolato così che ogni sasso tocchi quello sotto
+// bottom→top: cy[n] = cy[n-1] - ry[n-1] - ry[n]
+const STONES: { cx: number; cy: number; rx: number; ry: number; trigger: number }[] = [
+  { cx: 50, cy: 197, rx: 43, ry: 13, trigger: 0.04 }, // fondo
+  { cx: 47, cy: 171, rx: 35, ry: 11, trigger: 0.11 }, // cy = 197-13-11 = 173... slight overlap
+  { cx: 53, cy: 148, rx: 39, ry: 12, trigger: 0.18 },
+  { cx: 50, cy: 127, rx: 27, ry:  9, trigger: 0.25 },
+  { cx: 48, cy: 108, rx: 33, ry: 10, trigger: 0.32 },
+  { cx: 52, cy:  91, rx: 21, ry:  7, trigger: 0.39 },
+  { cx: 50, cy:  79, rx: 15, ry:  5, trigger: 0.46 },
 ];
 
 function easeOut(t: number) {
@@ -47,14 +48,14 @@ export default function ScrollStones() {
       }}
     >
       <svg
-        viewBox="0 0 100 460"
+        viewBox="0 0 100 215"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         style={{ height: "88vh", width: "auto" }}
       >
-        {STONES.map(([cx, cy, rx, ry, trigger], i) => {
+        {STONES.map(({ cx, cy, rx, ry, trigger }, i) => {
           const t = easeOut(Math.min(Math.max((progress - trigger) / 0.07, 0), 1));
-          const translateY = (1 - t) * 24;
+          const dropY = (1 - t) * 20;
 
           return (
             <ellipse
@@ -65,10 +66,10 @@ export default function ScrollStones() {
               ry={ry}
               fill="none"
               stroke="#373f5e"
-              strokeWidth="2.5"
+              strokeWidth="1.2"
               style={{
                 opacity: t,
-                transform: `translateY(${translateY}px)`,
+                transform: `translateY(${dropY}px)`,
                 willChange: "transform, opacity",
               }}
             />
