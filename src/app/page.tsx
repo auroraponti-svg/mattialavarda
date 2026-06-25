@@ -5,7 +5,6 @@ import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
 import HeroBackground from "@/components/HeroBackground";
 import ScrollSpine from "@/components/ScrollSpine";
-import MagneticButton from "@/components/MagneticButton";
 
 const trattamenti = [
   { icon: Activity, titolo: "Dolori muscoloscheletrici", desc: "Cervicalgie, lombalgie, dolori articolari e tensioni muscolari trattati con tecniche manuali mirate." },
@@ -46,23 +45,19 @@ export default function Home() {
               </p>
             </Reveal>
             <Reveal delay={260}>
-              <div className="flex flex-wrap gap-4">
-                <MagneticButton>
-                  <Link
-                    href="/contatti"
-                    className="press press-primary icon-nudge bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy cursor-pointer flex items-center gap-2 transition-colors"
-                  >
-                    Prenota una visita <ArrowRight size={18} aria-hidden="true" />
-                  </Link>
-                </MagneticButton>
-                <MagneticButton>
-                  <Link
-                    href="/chi-sono"
-                    className="press bg-white text-steel font-semibold px-6 py-3 rounded-lg border border-steel/30 hover:border-steel cursor-pointer transition-colors"
-                  >
-                    Scopri chi sono
-                  </Link>
-                </MagneticButton>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  href="/contatti"
+                  className="press inline-flex items-center gap-2 bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy transition-colors cursor-pointer"
+                >
+                  Prenota una visita <ArrowRight size={18} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/chi-sono"
+                  className="press inline-flex items-center bg-white text-steel font-semibold px-6 py-3 rounded-lg border border-steel/30 hover:border-steel hover:text-navy transition-colors cursor-pointer"
+                >
+                  Scopri chi sono
+                </Link>
               </div>
             </Reveal>
             <Reveal delay={340}>
@@ -132,14 +127,12 @@ export default function Home() {
           <p className="text-white/80 mb-8">
             Prenota il tuo appuntamento allo studio di Samarate. Scegli giorno e orario in base alle disponibilità.
           </p>
-          <MagneticButton>
-            <Link
-              href="/contatti"
-              className="press press-primary icon-nudge bg-white text-navy font-semibold px-8 py-3 rounded-lg hover:bg-mist cursor-pointer inline-flex items-center gap-2 transition-colors"
-            >
-              Prenota ora <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-          </MagneticButton>
+          <Link
+            href="/contatti"
+            className="press inline-flex items-center gap-2 bg-white text-navy font-semibold px-8 py-3 rounded-lg hover:bg-mist transition-colors cursor-pointer"
+          >
+            Prenota ora <ArrowRight size={18} aria-hidden="true" />
+          </Link>
         </div>
       </section>
     </>
