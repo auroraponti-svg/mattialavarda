@@ -43,6 +43,11 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
+            <li className="pt-2 border-t border-white/10 mt-1">
+              <Link href="/admin" className="text-white/35 hover:text-white/70 transition-colors duration-300 cursor-pointer text-xs">
+                Accesso admin
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -75,18 +80,10 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-4 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <p className="text-xs text-white/40">
-            &copy; {new Date().getFullYear()} {site.name} — Osteopata. Tutti i diritti riservati.
-          </p>
-          <Link
-            href="/admin"
-            className="text-xs text-white/35 hover:text-white/70 transition-colors duration-300 cursor-pointer"
-          >
-            Accesso admin
-          </Link>
-        </div>
+      <div className="border-t border-white/10 py-4 text-center">
+        <p className="text-xs text-white/40">
+          &copy; {new Date().getFullYear()} {site.name} — Osteopata. Tutti i diritti riservati.
+        </p>
       </div>
     </footer>
   );
