@@ -2,20 +2,18 @@
 
 import { useEffect, useState } from "react";
 
-// Ogni sasso: [cx, cy, rx, ry, colore, inclinazione rx-skew, progressione trigger]
-// Disposti dal basso verso l'alto come nel logo
-const STONES: [number, number, number, number, string, number, number][] = [
-  [50, 236, 43, 13, "#2B2E54", -3,  0.04],
-  [47, 210, 35, 11, "#3F6FA0",  2,  0.11],
-  [53, 185, 39, 12, "#2B2E54", -2,  0.18],
-  [50, 160, 27,  9, "#7FB1DC",  3,  0.25],
-  [48, 137, 33, 10, "#2B2E54", -1,  0.32],
-  [52, 117, 21,  7, "#AFD2EF",  2,  0.39],
-  [50, 100, 15,  5, "#2B2E54",  0,  0.46],
+// [cx, cy, rx, ry, trigger]
+const STONES: [number, number, number, number, number][] = [
+  [50, 430, 43, 13, 0.04],
+  [47, 385, 35, 11, 0.11],
+  [53, 342, 39, 12, 0.18],
+  [50, 298, 27,  9, 0.25],
+  [48, 259, 33, 10, 0.32],
+  [52, 223, 21,  7, 0.39],
+  [50, 193, 15,  5, 0.46],
 ];
 
-// Puntini vertebra tra i sassi
-const DOTS = [247, 225, 200, 174, 150, 128, 109, 96];
+const DOTS = [450, 410, 367, 320, 278, 241, 210, 182];
 
 function easeOut(t: number) {
   return 1 - Math.pow(1 - t, 3);
@@ -35,10 +33,9 @@ export default function ScrollStones() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Globale: compare presto, scompare verso il fondo
   const fadeIn  = Math.min(progress * 8, 1);
   const fadeOut = Math.max(0, 1 - (progress - 0.62) * 3.5);
-  const globalOpacity = fadeIn * fadeOut * 0.28;
+  const globalOpacity = fadeIn * fadeOut * 0.30;
 
   return (
     <div
@@ -48,85 +45,54 @@ export default function ScrollStones() {
         opacity: globalOpacity,
         zIndex: 10,
         transition: "opacity 300ms ease",
+        // stesso filtro colore della colonna vertebrale
+        filter: "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7)",
       }}
     >
       <svg
-        width="90"
-        height="270"
-        viewBox="0 0 100 270"
+        width="auto"
+        height="88vh"
+        viewBox="0 0 100 480"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        style={{ height: "88vh", width: "auto" }}
       >
-        <defs>
-          {/* Ombra per ogni sasso */}
-          <filter id="stone-shadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="1" dy="3" stdDeviation="3" floodColor="#0a0e1a" floodOpacity="0.35" />
-          </filter>
-        </defs>
-
-        {/* Puntini vertebra — compaiono con il sasso sotto di loro */}
+        {/* Puntini centrali tra i sassi */}
         {DOTS.map((cy, i) => {
           const stoneIdx = Math.min(i, STONES.length - 1);
-          const trigger = STONES[stoneIdx][6];
+          const trigger = STONES[stoneIdx][4];
           const t = easeOut(Math.min(Math.max((progress - trigger) / 0.07, 0), 1));
           return (
             <circle
               key={cy}
               cx={50}
               cy={cy}
-              r={2.2}
-              fill="#AFD2EF"
-              style={{
-                opacity: t * 0.6,
-                transition: "opacity 200ms",
-              }}
+              r={2.5}
+              fill="#373f5e"
+              style={{ opacity: t * 0.7 }}
             />
           );
         })}
 
-        {/* Sassi — dal basso verso l'alto */}
-        {STONES.map(([cx, cy, rx, ry, fill, _skew, trigger], i) => {
+        {/* Sassi — solo contorno, come la colonna vertebrale */}
+        {STONES.map(([cx, cy, rx, ry, trigger], i) => {
           const t = easeOut(Math.min(Math.max((progress - trigger) / 0.07, 0), 1));
-          const translateY = (1 - t) * 18;
+          const translateY = (1 - t) * 22;
 
           return (
-            <g
+            <ellipse
               key={i}
+              cx={cx}
+              cy={cy}
+              rx={rx}
+              ry={ry}
+              fill="#373f5e"
               style={{
                 opacity: t,
                 transform: `translateY(${translateY}px)`,
-                transition: "none",
                 willChange: "transform, opacity",
               }}
-            >
-              {/* Ombra sotto il sasso */}
-              <ellipse
-                cx={cx + 1}
-                cy={cy + ry + 2}
-                rx={rx * 0.85}
-                ry={3}
-                fill="#0a0e1a"
-                opacity={0.18 * t}
-              />
-              {/* Sasso principale */}
-              <ellipse
-                cx={cx}
-                cy={cy}
-                rx={rx}
-                ry={ry}
-                fill={fill}
-                filter="url(#stone-shadow)"
-              />
-              {/* Riflesso luminoso in alto */}
-              <ellipse
-                cx={cx - rx * 0.25}
-                cy={cy - ry * 0.3}
-                rx={rx * 0.45}
-                ry={ry * 0.35}
-                fill="white"
-                opacity={0.10}
-              />
-            </g>
+            />
           );
         })}
       </svg>
