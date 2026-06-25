@@ -3,6 +3,7 @@ import { Plus, Pencil, CircleCheck, CircleDashed } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, type Post } from "@/lib/posts";
 import { LogoutButton, DeleteButton } from "@/components/admin/AdminActions";
+import { getSeoLevel, seoColors, seoLabels } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,22 @@ export default async function AdminDashboard() {
                     <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600"><CircleDashed size={13} /> Bozza</span>
                   )}
                   <span className="text-xs text-navy/40">· {p.category} · {formatDate(p.created_at)}</span>
+                  {(() => {
+                    const level = getSeoLevel(p);
+                    return (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs font-medium"
+                        title={seoLabels[level]}
+                        style={{ color: seoColors[level] }}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full inline-block"
+                          style={{ backgroundColor: seoColors[level] }}
+                        />
+                        SEO
+                      </span>
+                    );
+                  })()}
                 </div>
                 <p className="font-semibold text-navy truncate">{p.title}</p>
               </div>
