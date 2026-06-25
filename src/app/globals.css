@@ -2,6 +2,18 @@
 
 @theme inline {
   --font-sans: var(--font-figtree);
+
+  /* Brand palette (from logo) */
+  --color-navy: #2B2E54;
+  --color-navy-700: #232845;
+  --color-steel: #3F6FA0;
+  --color-sky: #7FB1DC;
+  --color-sky-soft: #AFD2EF;
+  --color-mist: #EAF2FA;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Rendered blog content */
@@ -55,6 +67,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

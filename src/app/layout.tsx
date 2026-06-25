@@ -11,8 +11,9 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  title: "Dott. Osteopata | Gallarate",
-  description: "Studio osteopatico a Gallarate. Trattamenti personalizzati per il benessere della tua salute.",
+  title: "Mattia Lavarda — Osteopata | Samarate (VA)",
+  description:
+    "Mattia Lavarda, Osteopata e Chinesiologo. Studio a Samarate (Varese): trattamenti osteopatici personalizzati per dolori, postura, sport e benessere.",
 };
 
 export default function RootLayout({
@@ -22,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it" className={`${figtree.variable} h-full`}>
-      <body className="min-h-full flex flex-col font-sans antialiased bg-[#F0FDFA] text-[#134E4A]">
+      <body className="min-h-full flex flex-col font-sans antialiased bg-white text-navy">
         <Navbar />
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
