@@ -19,7 +19,7 @@ export default function AdminLogin() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setError("Email o password non corretti.");
+      setError(`${error.message} (codice ${error.status ?? "?"})`);
       setLoading(false);
       return;
     }
