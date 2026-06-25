@@ -21,7 +21,7 @@ export default function ScrollSpine() {
 
   return (
     <div
-      className="fixed right-0 top-0 h-screen z-10 hidden xl:flex items-center pointer-events-none select-none"
+      className="fixed right-0 top-0 h-screen z-10 hidden lg:flex items-center pointer-events-none select-none"
       aria-hidden="true"
       style={{ width: 200 }}
     >
@@ -35,7 +35,7 @@ export default function ScrollSpine() {
           width: "auto",
           maxWidth: "none",
           filter:
-            "invert(1) sepia(1) saturate(2) hue-rotate(185deg) brightness(0.65) opacity(0.28)",
+            "invert(1) sepia(1) saturate(2) hue-rotate(185deg) brightness(0.65) opacity(0.38)",
           mixBlendMode: "multiply",
           clipPath: `inset(0 0 ${hidden}% 0)`,
         }}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Mail } from "lucide-react";
+import { site } from "@/lib/site";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -11,7 +12,6 @@ function InstagramIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-import { site } from "@/lib/site";
 
 export default function Footer() {
   return (
@@ -38,7 +38,7 @@ export default function Footer() {
               { href: "/contatti", label: "Contatti" },
             ].map(({ href, label }) => (
               <li key={href}>
-                <Link href={href} className="hover:text-sky transition-colors duration-200 cursor-pointer">
+                <Link href={href} className="link-underline hover:text-sky transition-colors duration-200 cursor-pointer">
                   {label}
                 </Link>
               </li>
@@ -55,27 +55,38 @@ export default function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Phone size={16} className="text-sky shrink-0" aria-hidden="true" />
-              <a href={`tel:${site.phoneHref}`} className="hover:text-sky transition-colors duration-200 cursor-pointer">
+              <a href={`tel:${site.phoneHref}`} className="link-underline hover:text-sky transition-colors duration-200 cursor-pointer">
                 {site.phone}
               </a>
             </li>
             <li className="flex items-center gap-2">
               <Mail size={16} className="text-sky shrink-0" aria-hidden="true" />
-              <a href={`mailto:${site.email}`} className="hover:text-sky transition-colors duration-200 cursor-pointer break-all">
+              <a href={`mailto:${site.email}`} className="link-underline hover:text-sky transition-colors duration-200 cursor-pointer break-all">
                 {site.email}
               </a>
             </li>
             <li className="flex items-center gap-2">
               <InstagramIcon className="text-sky shrink-0" />
-              <a href={site.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-sky transition-colors duration-200 cursor-pointer">
+              <a href={site.instagram} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-sky transition-colors duration-200 cursor-pointer">
                 Instagram
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10 text-center text-xs text-white/40 py-4">
-        &copy; {new Date().getFullYear()} {site.name} — Osteopata. Tutti i diritti riservati.
+
+      <div className="border-t border-white/10 py-4 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <p className="text-xs text-white/40">
+            &copy; {new Date().getFullYear()} {site.name} — Osteopata. Tutti i diritti riservati.
+          </p>
+          <Link
+            href="/admin"
+            className="text-xs text-white/20 hover:text-white/50 transition-colors duration-300 cursor-pointer"
+          >
+            Accesso admin
+          </Link>
+        </div>
       </div>
     </footer>
   );
