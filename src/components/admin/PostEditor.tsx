@@ -20,6 +20,9 @@ export default function PostEditor({ post }: { post?: Post }) {
   const [content, setContent] = useState(post?.content ?? "");
   const [cover, setCover] = useState<string | null>(post?.cover_image ?? null);
   const [published, setPublished] = useState(post?.published ?? false);
+  const [metaTitle, setMetaTitle] = useState(post?.meta_title ?? "");
+  const [metaDescription, setMetaDescription] = useState(post?.meta_description ?? "");
+  const [keywords, setKeywords] = useState(post?.keywords ?? "");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -80,6 +83,9 @@ export default function PostEditor({ post }: { post?: Post }) {
       content,
       cover_image: cover,
       published: publish,
+      meta_title: metaTitle.trim() || null,
+      meta_description: metaDescription.trim() || null,
+      keywords: keywords.trim() || null,
       updated_at: new Date().toISOString(),
     };
 
@@ -180,6 +186,51 @@ export default function PostEditor({ post }: { post?: Post }) {
         <p className="text-xs text-navy/40 mt-1">
           Formattazione Markdown supportata: <code># Titolo</code>, <code>**grassetto**</code>, <code>- elenco</code>, ecc.
         </p>
+      </div>
+
+      {/* SEO */}
+      <div className="rounded-xl border border-steel/20 bg-steel/5 p-5 space-y-4">
+        <h3 className="text-sm font-semibold text-steel uppercase tracking-wide">SEO</h3>
+        <div>
+          <label htmlFor="meta_title" className="block text-sm font-medium text-navy mb-1">
+            Meta title <span className="text-navy/40 font-normal">(max 60 caratteri)</span>
+          </label>
+          <input
+            id="meta_title"
+            value={metaTitle}
+            onChange={(e) => setMetaTitle(e.target.value)}
+            maxLength={60}
+            className="w-full rounded-lg border border-navy/15 px-4 py-2.5 text-navy focus:outline-none focus:ring-3 focus:ring-steel/40 focus:border-steel transition"
+            placeholder={title || "Titolo per i motori di ricerca"}
+          />
+          <p className="text-xs text-navy/40 mt-0.5">{metaTitle.length}/60 — se vuoto, verrà usato il titolo dell&apos;articolo</p>
+        </div>
+        <div>
+          <label htmlFor="meta_desc" className="block text-sm font-medium text-navy mb-1">
+            Meta description <span className="text-navy/40 font-normal">(max 160 caratteri)</span>
+          </label>
+          <textarea
+            id="meta_desc"
+            value={metaDescription}
+            onChange={(e) => setMetaDescription(e.target.value)}
+            maxLength={160}
+            rows={3}
+            className="w-full rounded-lg border border-navy/15 px-4 py-2.5 text-navy text-sm leading-relaxed focus:outline-none focus:ring-3 focus:ring-steel/40 focus:border-steel transition"
+            placeholder={excerpt || "Descrizione mostrata nei risultati di ricerca"}
+          />
+          <p className="text-xs text-navy/40 mt-0.5">{metaDescription.length}/160 — se vuota, verrà usato l&apos;estratto</p>
+        </div>
+        <div>
+          <label htmlFor="keywords" className="block text-sm font-medium text-navy mb-1">Parole chiave</label>
+          <input
+            id="keywords"
+            value={keywords}
+            onChange={(e) => setKeywords(e.target.value)}
+            className="w-full rounded-lg border border-navy/15 px-4 py-2.5 text-navy focus:outline-none focus:ring-3 focus:ring-steel/40 focus:border-steel transition"
+            placeholder="osteopatia, lombalgia, Samarate (separate da virgola)"
+          />
+          <p className="text-xs text-navy/40 mt-0.5">Inserisci le parole chiave separate da virgola</p>
+        </div>
       </div>
 
       {uploading && (

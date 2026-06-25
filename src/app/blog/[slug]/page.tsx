@@ -30,8 +30,9 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return { title: "Articolo non trovato" };
   return {
-    title: `${post.title} | Blog Mattia Lavarda`,
-    description: post.excerpt,
+    title: `${post.meta_title || post.title} | Blog Mattia Lavarda`,
+    description: post.meta_description || post.excerpt || undefined,
+    keywords: post.keywords || undefined,
   };
 }
 
