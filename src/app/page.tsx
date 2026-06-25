@@ -22,45 +22,57 @@ export default function Home() {
       <section className="bg-gradient-to-br from-mist to-white py-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1">
-            <span className="inline-block bg-steel/10 text-steel text-sm font-semibold px-3 py-1 rounded-full mb-4">
-              Studio a {site.addressShort}
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-bold text-navy leading-tight mb-6">
-              Il movimento è salute,<br />
-              <span className="text-steel">l&apos;equilibrio è benessere</span>
-            </h1>
-            <p className="text-navy/70 text-lg leading-relaxed mb-8 max-w-lg">
-              Sono <strong className="text-navy">Mattia Lavarda</strong>, osteopata e chinesiologo.
-              Aiuto le persone a ritrovare equilibrio e libertà di movimento attraverso trattamenti
-              osteopatici personalizzati e un approccio scientifico al corpo.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/contatti"
-                className="press bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy cursor-pointer flex items-center gap-2"
-              >
-                Prenota una visita <ArrowRight size={18} aria-hidden="true" />
-              </Link>
-              <Link
-                href="/chi-sono"
-                className="press bg-white text-steel font-semibold px-6 py-3 rounded-lg border border-steel/30 hover:border-steel cursor-pointer"
-              >
-                Scopri chi sono
-              </Link>
-            </div>
-            <ul className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 text-sm text-navy/70">
-              {punti.map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-steel" aria-hidden="true" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <Reveal delay={0}>
+              <span className="inline-block bg-steel/10 text-steel text-sm font-semibold px-3 py-1 rounded-full mb-4">
+                Studio a {site.addressShort}
+              </span>
+            </Reveal>
+            <Reveal delay={90}>
+              <h1 className="text-4xl sm:text-5xl font-bold text-navy leading-tight mb-6">
+                Il movimento è salute,<br />
+                <span className="text-steel">l&apos;equilibrio è benessere</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={180}>
+              <p className="text-navy/70 text-lg leading-relaxed mb-8 max-w-lg">
+                Sono <strong className="text-navy">Mattia Lavarda</strong>, osteopata e chinesiologo.
+                Aiuto le persone a ritrovare equilibrio e libertà di movimento attraverso trattamenti
+                osteopatici personalizzati e un approccio scientifico al corpo.
+              </p>
+            </Reveal>
+            <Reveal delay={260}>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/contatti"
+                  className="press bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy cursor-pointer flex items-center gap-2"
+                >
+                  Prenota una visita <ArrowRight size={18} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/chi-sono"
+                  className="press bg-white text-steel font-semibold px-6 py-3 rounded-lg border border-steel/30 hover:border-steel cursor-pointer"
+                >
+                  Scopri chi sono
+                </Link>
+              </div>
+            </Reveal>
+            <Reveal delay={340}>
+              <ul className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 text-sm text-navy/70">
+                {punti.map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <CheckCircle size={16} className="text-steel" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
           <div className="flex-1 flex justify-center">
-            <div className="relative w-full max-w-md aspect-[4/3] rounded-2xl overflow-hidden shadow-xl ring-1 ring-navy/10">
-              <Image src="/mattia.jpg" alt="Mattia Lavarda, osteopata, nel suo studio" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 28rem" />
-            </div>
+            <Reveal delay={200} className="w-full max-w-md">
+              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-xl ring-1 ring-navy/10">
+                <Image src="/mattia.jpg" alt="Mattia Lavarda, osteopata, nel suo studio" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 28rem" />
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
