@@ -4,6 +4,7 @@ import { Activity, Brain, PersonStanding, Dumbbell, HeartPulse, Baby, CheckCircl
 import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
 import HeroBackground from "@/components/HeroBackground";
+import ScrollSpine from "@/components/ScrollSpine";
 
 const trattamenti = [
   { icon: Activity, titolo: "Dolori muscoloscheletrici", desc: "Cervicalgie, lombalgie, dolori articolari e tensioni muscolari trattati con tecniche manuali mirate." },
@@ -19,6 +20,7 @@ const punti = ["Osteopata e Chinesiologo", "Background scientifico in Scienze Mo
 export default function Home() {
   return (
     <>
+      <ScrollSpine />
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-mist to-white py-20 px-4 sm:px-6">
         <HeroBackground />

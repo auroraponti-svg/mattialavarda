@@ -3,7 +3,6 @@ import { Figtree } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ScrollSpine from "@/components/ScrollSpine";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -26,7 +25,6 @@ export default function RootLayout({
     <html lang="it" className={`${figtree.variable} h-full`}>
       <body className="min-h-full flex flex-col font-sans antialiased bg-white text-navy">
         <Navbar />
-        <ScrollSpine />
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
       </body>

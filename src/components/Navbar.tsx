@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
 const links = [
@@ -16,6 +16,22 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const update = () => setHash(window.location.hash);
+    update();
+    window.addEventListener("hashchange", update);
+    return () => window.removeEventListener("hashchange", update);
+  }, [pathname]);
+
+  // "Prenota" button is active when on /contatti#prenotazione
+  const prenotaActive = pathname === "/contatti" && hash === "#prenotazione";
+
+  function isActive(href: string) {
+    if (href === "/contatti" && prenotaActive) return false; // Prenota handles it
+    return pathname === href;
+  }
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-navy/10 shadow-sm">
@@ -38,7 +54,7 @@ export default function Navbar() {
               <Link
                 href={href}
                 className={`text-sm font-medium transition-colors duration-200 cursor-pointer ${
-                  pathname === href
+                  isActive(href)
                     ? "text-steel border-b-2 border-steel pb-0.5"
                     : "text-navy hover:text-steel"
                 }`}
@@ -50,7 +66,11 @@ export default function Navbar() {
           <li>
             <Link
               href="/contatti#prenotazione"
-              className="press bg-steel text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-navy cursor-pointer"
+              className={`press text-sm font-semibold px-4 py-2 rounded-lg cursor-pointer transition-colors ${
+                prenotaActive
+                  ? "bg-navy text-white"
+                  : "bg-steel text-white hover:bg-navy"
+              }`}
             >
               Prenota
             </Link>
@@ -77,7 +97,7 @@ export default function Navbar() {
               href={href}
               onClick={() => setOpen(false)}
               className={`text-sm font-medium transition-colors duration-200 cursor-pointer ${
-                pathname === href ? "text-steel" : "text-navy hover:text-steel"
+                isActive(href) ? "text-steel" : "text-navy hover:text-steel"
               }`}
             >
               {label}

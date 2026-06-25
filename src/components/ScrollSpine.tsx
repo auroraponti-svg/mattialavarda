@@ -22,20 +22,17 @@ export default function ScrollSpine() {
 
   return (
     <div
-      className="fixed right-0 top-0 h-screen z-10 hidden xl:block pointer-events-none select-none overflow-hidden"
+      className="fixed right-0 top-0 h-screen z-10 hidden xl:flex items-center pointer-events-none select-none"
       aria-hidden="true"
-      style={{ width: 160 }}
+      style={{ width: 200 }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/spine.svg"
         alt=""
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          height: "92vh",
+          display: "block",
+          height: "90vh",
           width: "auto",
           maxWidth: "none",
           filter:
