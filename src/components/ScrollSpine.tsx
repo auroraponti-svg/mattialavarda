@@ -35,8 +35,7 @@ export default function ScrollSpine() {
           width: "auto",
           maxWidth: "none",
           filter:
-            "invert(1) sepia(1) saturate(2) hue-rotate(185deg) brightness(0.65) opacity(0.38)",
-          mixBlendMode: "multiply",
+            "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7) opacity(0.30)",
           clipPath: `inset(0 0 ${hidden}% 0)`,
         }}
       />
