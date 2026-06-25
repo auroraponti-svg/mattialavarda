@@ -43,8 +43,8 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
-            <li className="pt-2 border-t border-white/10 mt-1">
-              <Link href="/admin" className="text-white/35 hover:text-white/70 transition-colors duration-300 cursor-pointer text-xs">
+            <li className="pt-1">
+              <Link href="/admin" className="text-white/25 hover:text-white/60 transition-colors duration-300 cursor-pointer text-sm">
                 Accesso admin
               </Link>
             </li>
