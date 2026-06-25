@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, UserPlus } from "lucide-react";
 
-const T = 18; // spessore cartoncino in px
+const T = 6;  // spessore cartoncino in px
 const R = 14; // border-radius biglietto in px — i bordi laterali devono stare dentro gli angoli
 
 // Inclinazione a riposo: mostra il bordo superiore e quello sinistro
@@ -85,42 +85,42 @@ export default function BusinessCard() {
                 }}
               />
 
-              {/* ══ BORDO SUPERIORE — illuminato (chiaro) ══ */}
+              {/* ══ BORDO SUPERIORE — bianco (colore del card in alto) ══ */}
               <div style={{
                 position: "absolute", top: 0,
-                left: R, right: R,          // rientra degli angoli arrotondati
+                left: R, right: R,
                 height: `${T}px`,
-                background: "linear-gradient(to right, #e8ecf4 0%, #f0f2f8 50%, #e2e6f0 100%)",
+                background: "#f5f6fa",
                 transformOrigin: "center top",
                 transform: `rotateX(90deg) translateZ(${T / 2}px)`,
               }} />
 
-              {/* ══ BORDO INFERIORE — in ombra (scuro) ══ */}
+              {/* ══ BORDO INFERIORE — bianco leggermente scurito ══ */}
               <div style={{
                 position: "absolute", bottom: 0,
                 left: R, right: R,
                 height: `${T}px`,
-                background: "linear-gradient(to right, #7c8298 0%, #6a6e84 50%, #7a7e94 100%)",
+                background: "#e0e2ea",
                 transformOrigin: "center bottom",
                 transform: `rotateX(-90deg) translateZ(${T / 2}px)`,
               }} />
 
-              {/* ══ BORDO SINISTRO — luce laterale ══ */}
+              {/* ══ BORDO SINISTRO — navy (colore della banda sinistra del card) ══ */}
               <div style={{
                 position: "absolute", left: 0,
-                top: R, bottom: R,          // rientra degli angoli arrotondati
+                top: R, bottom: R,
                 width: `${T}px`,
-                background: "linear-gradient(to bottom, #dce0ec 0%, #c8ccda 50%, #b8bccb 100%)",
+                background: "#2B2E54",
                 transformOrigin: "left center",
                 transform: `rotateY(-90deg) translateZ(${T / 2}px)`,
               }} />
 
-              {/* ══ BORDO DESTRO — in ombra ══ */}
+              {/* ══ BORDO DESTRO — bianco (colore della parte destra del card) ══ */}
               <div style={{
                 position: "absolute", right: 0,
                 top: R, bottom: R,
                 width: `${T}px`,
-                background: "linear-gradient(to bottom, #9ca0b2 0%, #888c9e 50%, #80849a 100%)",
+                background: "#f5f6fa",
                 transformOrigin: "right center",
                 transform: `rotateY(90deg) translateZ(${T / 2}px)`,
               }} />
