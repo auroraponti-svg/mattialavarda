@@ -49,38 +49,36 @@ export default function BusinessCard() {
             }}
           >
             {/* ── FRONTE ── */}
-            <div style={{
-              position: "absolute", inset: 0,
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: `translateZ(${T / 2}px)`,
-              borderRadius: 16,
-              overflow: "hidden",
-            }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/bdv-1.png"
-                alt="Biglietto da visita fronte"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/bdv-1.png"
+              alt="Biglietto da visita fronte"
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                objectFit: "cover", display: "block",
+                borderRadius: 16,
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transform: `translateZ(${T / 2}px)`,
+              }}
+            />
 
             {/* ── RETRO ── */}
-            <div style={{
-              position: "absolute", inset: 0,
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: `rotateY(180deg) translateZ(${T / 2}px)`,
-              borderRadius: 16,
-              overflow: "hidden",
-            }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/bdv-2.png"
-                alt="Biglietto da visita retro"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/bdv-2.png"
+              alt="Biglietto da visita retro"
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                objectFit: "cover", display: "block",
+                borderRadius: 16,
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transform: `rotateY(180deg) translateZ(${T / 2}px)`,
+              }}
+            />
 
             {/* ── BORDO SINISTRO ── */}
             <div style={{
