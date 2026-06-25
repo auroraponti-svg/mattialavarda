@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MapPin, Phone, Mail, MessageCircle, CalendarDays, UserPlus } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, CalendarDays } from "lucide-react";
 import { site } from "@/lib/site";
 import CalBooking from "@/components/CalBooking";
 import ContactForm from "@/components/ContactForm";
@@ -83,20 +83,10 @@ export default function Contatti() {
         </div>
       </section>
 
-      {/* Salva contatto + biglietto */}
+      {/* Salva contatto */}
       <Reveal delay={0} className="px-4 sm:px-6 mt-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-3">
-          <a
-            href="/mattia-lavarda.vcf"
-            download="Mattia Lavarda Osteopata.vcf"
-            className="press flex items-center justify-center gap-3 flex-1 bg-steel text-white font-semibold py-4 rounded-xl hover:bg-navy transition-colors cursor-pointer text-base shadow-sm"
-          >
-            <UserPlus size={20} aria-hidden="true" />
-            Salva il mio contatto
-          </a>
-          <div className="flex items-center justify-center sm:justify-start">
-            <BusinessCard />
-          </div>
+        <div className="max-w-6xl mx-auto">
+          <BusinessCard />
         </div>
       </Reveal>
 
