@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
 import { site } from "@/lib/site";
-import CalBooking from "@/components/CalBooking";
-import ContactForm from "@/components/ContactForm";
+import ContactTabs from "@/components/ContactTabs";
 
 export const metadata: Metadata = {
   title: "Contatti e Prenotazioni | Mattia Lavarda Osteopata",
@@ -13,106 +12,84 @@ export default function Contatti() {
   return (
     <>
       {/* Header */}
-      <section className="bg-gradient-to-br from-mist to-white py-16 px-4 sm:px-6">
+      <section className="bg-gradient-to-br from-mist to-white py-14 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-navy mb-3">Contatti e prenotazioni</h1>
-          <p className="text-navy/60 max-w-xl mx-auto">
-            Prenota online scegliendo tra gli orari disponibili, oppure contattami direttamente.
+          <h1 className="text-4xl font-bold text-navy mb-3">Prenota o contattami</h1>
+          <p className="text-navy/60 max-w-lg mx-auto">
+            Fissa il tuo appuntamento online in pochi clic, oppure scrivimi per qualsiasi informazione.
           </p>
         </div>
       </section>
 
-      {/* Prenotazione online */}
-      <section className="py-16 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-navy mb-2 text-center">Prenota il tuo appuntamento</h2>
-          <p className="text-navy/60 text-center mb-8 max-w-2xl mx-auto">
-            Il calendario mostra in tempo reale gli orari liberi. Riceverai una email di conferma con la
-            possibilità di salvare l&apos;appuntamento nel tuo calendario.
-          </p>
-          <CalBooking />
-        </div>
-      </section>
+      {/* Main: azione principale + sidebar contatti */}
+      <section className="py-12 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
+          {/* Azione principale */}
+          <ContactTabs />
 
-      {/* Contatti diretti + form */}
-      <section className="bg-mist py-16 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Info */}
-          <div>
-            <h2 className="text-2xl font-bold text-navy mb-6">Dove mi trovi</h2>
-            <ul className="space-y-5 mb-8">
-              <li className="flex items-start gap-3">
-                <span className="w-10 h-10 bg-steel/10 rounded-lg flex items-center justify-center shrink-0">
-                  <MapPin size={20} className="text-steel" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-semibold text-navy">{site.studio}</p>
-                  <p className="text-sm text-navy/60">{site.address}</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-10 h-10 bg-steel/10 rounded-lg flex items-center justify-center shrink-0">
-                  <Phone size={20} className="text-steel" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-semibold text-navy">Telefono</p>
-                  <a href={`tel:${site.phoneHref}`} className="text-sm text-navy/60 hover:text-steel transition-colors cursor-pointer">
+          {/* Sidebar compatta */}
+          <aside className="space-y-4">
+            <div className="bg-white rounded-2xl border border-navy/10 shadow-sm p-6">
+              <h2 className="font-bold text-navy mb-4">Lo studio</h2>
+              <ul className="space-y-4 text-sm">
+                <li className="flex items-start gap-3">
+                  <MapPin size={18} className="text-steel mt-0.5 shrink-0" aria-hidden="true" />
+                  <span className="text-navy/70">
+                    <span className="block font-medium text-navy">{site.studio}</span>
+                    {site.address}
+                  </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Phone size={18} className="text-steel shrink-0" aria-hidden="true" />
+                  <a href={`tel:${site.phoneHref}`} className="text-navy/70 hover:text-steel transition-colors cursor-pointer">
                     {site.phone}
                   </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-10 h-10 bg-steel/10 rounded-lg flex items-center justify-center shrink-0">
-                  <Mail size={20} className="text-steel" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-semibold text-navy">Email</p>
-                  <a href={`mailto:${site.email}`} className="text-sm text-navy/60 hover:text-steel transition-colors cursor-pointer break-all">
+                </li>
+                <li className="flex items-center gap-3">
+                  <Mail size={18} className="text-steel shrink-0" aria-hidden="true" />
+                  <a href={`mailto:${site.email}`} className="text-navy/70 hover:text-steel transition-colors cursor-pointer break-all">
                     {site.email}
                   </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-10 h-10 bg-steel/10 rounded-lg flex items-center justify-center shrink-0">
-                  <Clock size={20} className="text-steel" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-semibold text-navy">Orari</p>
-                  <p className="text-sm text-navy/60">Su appuntamento. Gli orari verranno pubblicati a breve.</p>
-                </div>
-              </li>
-            </ul>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Clock size={18} className="text-steel mt-0.5 shrink-0" aria-hidden="true" />
+                  <span className="text-navy/70">Solo su appuntamento</span>
+                </li>
+              </ul>
 
-            <a
-              href={`https://wa.me/${site.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#25D366] text-white font-semibold px-6 py-3 rounded-lg hover:brightness-95 transition cursor-pointer"
-            >
-              <MessageCircle size={18} aria-hidden="true" /> Scrivimi su WhatsApp
-            </a>
+              <a
+                href={`https://wa.me/${site.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold px-4 py-2.5 rounded-lg hover:brightness-95 transition cursor-pointer"
+              >
+                <MessageCircle size={18} aria-hidden="true" /> Scrivimi su WhatsApp
+              </a>
+            </div>
 
             {/* Mappa */}
-            <div className="mt-8 rounded-xl overflow-hidden border border-navy/10 shadow-sm">
+            <a
+              href={site.mapsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-2xl overflow-hidden border border-navy/10 shadow-sm group"
+              aria-label="Apri la mappa dello studio su Google Maps"
+            >
               <iframe
                 src={site.mapsEmbed}
                 title="Mappa dello studio a Samarate"
                 width="100%"
-                height="300"
+                height="220"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                style={{ border: 0 }}
+                style={{ border: 0, pointerEvents: "none" }}
+                className="block"
               />
-            </div>
-          </div>
-
-          {/* Form */}
-          <div>
-            <h2 className="text-2xl font-bold text-navy mb-6">Scrivimi un messaggio</h2>
-            <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-navy/10">
-              <ContactForm />
-            </div>
-          </div>
+              <span className="flex items-center justify-center gap-1.5 text-sm font-medium text-steel bg-white py-2.5 group-hover:text-navy transition-colors">
+                <MapPin size={15} aria-hidden="true" /> Apri in Google Maps
+              </span>
+            </a>
+          </aside>
         </div>
       </section>
     </>
