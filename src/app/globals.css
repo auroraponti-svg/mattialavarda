@@ -4,6 +4,56 @@
   --font-sans: var(--font-figtree);
 }
 
+/* Rendered blog content */
+.prose-content {
+  color: #2B2E54;
+  line-height: 1.75;
+}
+.prose-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 2rem 0 0.75rem;
+  color: #2B2E54;
+}
+.prose-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+  color: #2B2E54;
+}
+.prose-content p {
+  margin: 0 0 1.15rem;
+}
+.prose-content a {
+  color: #3F6FA0;
+  text-decoration: underline;
+}
+.prose-content ul,
+.prose-content ol {
+  margin: 0 0 1.15rem 1.25rem;
+  list-style: revert;
+}
+.prose-content li {
+  margin-bottom: 0.4rem;
+}
+.prose-content img {
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  height: auto;
+}
+.prose-content blockquote {
+  border-left: 4px solid #7FB1DC;
+  padding-left: 1rem;
+  color: #3F6FA0;
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+.prose-content strong {
+  color: #2B2E54;
+  font-weight: 600;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
