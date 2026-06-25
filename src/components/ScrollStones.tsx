@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-// Sassi impilati: cy calcolato così che ogni sasso tocchi quello sotto
-// bottom→top: cy[n] = cy[n-1] - ry[n-1] - ry[n]
+// Pietre più piccole, impilate, in un viewBox alto e stretto come la colonna
+// Posizioni calcolate: cy[n] = cy[n-1] - ry[n-1] - ry[n]  (si toccano)
 const STONES: { cx: number; cy: number; rx: number; ry: number; trigger: number }[] = [
-  { cx: 50, cy: 197, rx: 43, ry: 13, trigger: 0.04 }, // fondo
-  { cx: 47, cy: 171, rx: 35, ry: 11, trigger: 0.11 }, // cy = 197-13-11 = 173... slight overlap
-  { cx: 53, cy: 148, rx: 39, ry: 12, trigger: 0.18 },
-  { cx: 50, cy: 127, rx: 27, ry:  9, trigger: 0.25 },
-  { cx: 48, cy: 108, rx: 33, ry: 10, trigger: 0.32 },
-  { cx: 52, cy:  91, rx: 21, ry:  7, trigger: 0.39 },
-  { cx: 50, cy:  79, rx: 15, ry:  5, trigger: 0.46 },
+  { cx: 50, cy: 355, rx: 38, ry: 12, trigger: 0.04 },
+  { cx: 47, cy: 331, rx: 31, ry: 11, trigger: 0.11 },
+  { cx: 53, cy: 309, rx: 34, ry: 11, trigger: 0.18 },
+  { cx: 50, cy: 290, rx: 24, ry:  8, trigger: 0.25 },
+  { cx: 48, cy: 273, rx: 29, ry:  9, trigger: 0.32 },
+  { cx: 52, cy: 261, rx: 18, ry:  6, trigger: 0.39 },
+  { cx: 50, cy: 252, rx: 13, ry:  4, trigger: 0.46 },
 ];
 
 function easeOut(t: number) {
@@ -48,14 +48,14 @@ export default function ScrollStones() {
       }}
     >
       <svg
-        viewBox="0 0 100 215"
+        viewBox="0 0 100 480"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         style={{ height: "88vh", width: "auto" }}
       >
         {STONES.map(({ cx, cy, rx, ry, trigger }, i) => {
           const t = easeOut(Math.min(Math.max((progress - trigger) / 0.07, 0), 1));
-          const dropY = (1 - t) * 20;
+          const dropY = (1 - t) * 18;
 
           return (
             <ellipse
@@ -66,7 +66,7 @@ export default function ScrollStones() {
               ry={ry}
               fill="none"
               stroke="#373f5e"
-              strokeWidth="1.2"
+              strokeWidth="0.8"
               style={{
                 opacity: t,
                 transform: `translateY(${dropY}px)`,
