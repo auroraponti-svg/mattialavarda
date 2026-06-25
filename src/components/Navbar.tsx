@@ -10,7 +10,7 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/chi-sono", label: "Chi Sono" },
   { href: "/blog", label: "Blog" },
-  { href: "/contatti", label: "Contatti" },
+  { href: "/contatti", label: "Contatti", scrollTop: true },
 ];
 
 export default function Navbar() {
@@ -49,10 +49,11 @@ export default function Navbar() {
 
         {/* Desktop */}
         <ul className="hidden md:flex items-center gap-8">
-          {links.map(({ href, label }) => (
+          {links.map(({ href, label, scrollTop }) => (
             <li key={href}>
               <Link
                 href={href}
+                onClick={scrollTop ? () => window.scrollTo({ top: 0 }) : undefined}
                 className={`text-sm font-medium transition-colors duration-200 cursor-pointer ${
                   isActive(href)
                     ? "text-steel border-b-2 border-steel pb-0.5"
