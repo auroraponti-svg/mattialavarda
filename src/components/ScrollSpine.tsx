@@ -16,33 +16,32 @@ export default function ScrollSpine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Reveal top→bottom: clip from bottom shrinks as you scroll
-  // Use 130% so the reveal finishes before reaching the very bottom
-  const revealed = Math.min(100, progress * 130);
-  const hidden = Math.max(0, 100 - revealed);
+  // Clip from bottom: at scroll 0% → hidden 100% (nothing visible)
+  // at scroll 100% → hidden 0% (fully visible)
+  const hidden = Math.max(0, 100 - progress * 140);
 
   return (
     <div
-      className="fixed right-0 top-0 h-screen z-10 hidden lg:flex items-center pointer-events-none select-none"
+      className="fixed right-0 top-0 h-screen z-10 hidden xl:block pointer-events-none select-none overflow-hidden"
       aria-hidden="true"
-      style={{ width: 110 }}
+      style={{ width: 160 }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/spine.svg"
         alt=""
         style={{
-          height: "86vh",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          height: "92vh",
           width: "auto",
-          objectFit: "contain",
-          objectPosition: "top center",
-          // invert (white lines on dark → dark lines on white) then tint to brand blue
+          maxWidth: "none",
           filter:
-            "invert(1) sepia(1) saturate(2) hue-rotate(185deg) brightness(0.7) opacity(0.18)",
+            "invert(1) sepia(1) saturate(2) hue-rotate(185deg) brightness(0.65) opacity(0.28)",
           mixBlendMode: "multiply",
-          // reveal from top as user scrolls
           clipPath: `inset(0 0 ${hidden}% 0)`,
-          transition: "clip-path 180ms linear",
         }}
       />
     </div>
