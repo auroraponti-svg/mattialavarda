@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+Disallow: /admin/
+
+Sitemap: https://mattialavarda.vercel.app/sitemap.xml

@@ -1,22 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Save, Loader2, CheckCircle2, Eye, EyeOff, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   ga4Id: string;
   calApiKey: string;
-  vercelToken: string;
-  vercelProjectId: string;
+  lookerStudioUrl: string;
 };
 
-export default function AdminSettingsForm({ ga4Id, calApiKey, vercelToken, vercelProjectId }: Props) {
+export default function AdminSettingsForm({ ga4Id, calApiKey, lookerStudioUrl }: Props) {
   const supabase = createClient();
   const [ga4, setGa4] = useState(ga4Id);
   const [cal, setCal] = useState(calApiKey);
-  const [vToken, setVToken] = useState(vercelToken);
-  const [vProject, setVProject] = useState(vercelProjectId);
+  const [looker, setLooker] = useState(lookerStudioUrl);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showSecrets, setShowSecrets] = useState(false);
@@ -26,8 +24,7 @@ export default function AdminSettingsForm({ ga4Id, calApiKey, vercelToken, verce
     const updates = [
       { key: "ga4_measurement_id", value: ga4.trim() },
       { key: "cal_api_key", value: cal.trim() },
-      { key: "vercel_token", value: vToken.trim() },
-      { key: "vercel_project_id", value: vProject.trim() },
+      { key: "looker_studio_url", value: looker.trim() },
     ];
     for (const u of updates) {
       await supabase.from("site_settings").upsert({ key: u.key, value: u.value, updated_at: new Date().toISOString() });
@@ -54,6 +51,31 @@ export default function AdminSettingsForm({ ga4Id, calApiKey, vercelToken, verce
         </div>
       </div>
 
+      {/* Looker Studio */}
+      <div className="bg-white rounded-xl border border-navy/10 p-6 space-y-4">
+        <div>
+          <h3 className="font-semibold text-navy mb-0.5">Google Looker Studio — Analytics</h3>
+          <p className="text-xs text-navy/50 mb-2">
+            Crea un report su Looker Studio collegato a GA4, poi rendilo pubblico e incolla qui l&apos;URL embed.
+          </p>
+          <ol className="text-xs text-navy/50 space-y-1 list-decimal list-inside">
+            <li>Vai su <a href="https://lookerstudio.google.com" target="_blank" rel="noopener noreferrer" className="text-steel underline inline-flex items-center gap-0.5">lookerstudio.google.com <ExternalLink size={10} /></a> e crea un report collegato a GA4</li>
+            <li>Clicca <strong>File → Incorpora report</strong></li>
+            <li>Abilita la condivisione pubblica e copia l&apos;URL <code className="bg-mist px-1 rounded">src</code> dell&apos;iframe</li>
+            <li>Incolla l&apos;URL qui sotto</li>
+          </ol>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-navy/70 mb-1">URL embed Looker Studio</label>
+          <input
+            value={looker}
+            onChange={e => setLooker(e.target.value)}
+            placeholder="https://lookerstudio.google.com/embed/reporting/..."
+            className={inputClass}
+          />
+        </div>
+      </div>
+
       {/* Cal.com */}
       <div className="bg-white rounded-xl border border-navy/10 p-6 space-y-4">
         <div>
@@ -69,30 +91,6 @@ export default function AdminSettingsForm({ ga4Id, calApiKey, vercelToken, verce
             type={showSecrets ? "text" : "password"}
             className={inputClass}
           />
-        </div>
-      </div>
-
-      {/* Vercel Analytics */}
-      <div className="bg-white rounded-xl border border-navy/10 p-6 space-y-4">
-        <div>
-          <h3 className="font-semibold text-navy mb-0.5">Vercel Analytics</h3>
-          <p className="text-xs text-navy/50">Token in Vercel → Account Settings → Tokens. Project ID in Vercel → progetto → Settings → General.</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-navy/70 mb-1">API Token</label>
-            <input
-              value={vToken}
-              onChange={e => setVToken(e.target.value)}
-              placeholder="xxxxxxxxxxxxxxxx"
-              type={showSecrets ? "text" : "password"}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-navy/70 mb-1">Project ID</label>
-            <input value={vProject} onChange={e => setVProject(e.target.value)} placeholder="prj_xxxxxxxxxxxx" className={inputClass} />
-          </div>
         </div>
       </div>
 

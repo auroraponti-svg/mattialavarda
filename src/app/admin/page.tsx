@@ -2,14 +2,14 @@ import Link from "next/link";
 import {
   Plus, Pencil, CircleCheck, CircleDashed,
   BarChart3, FileText, TrendingUp, Settings,
-  AlertTriangle, Users, Eye, CalendarDays, Clock,
+  AlertTriangle, Users, Eye, CalendarDays, Clock, ExternalLink,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, type Post } from "@/lib/posts";
 import { LogoutButton, DeleteButton } from "@/components/admin/AdminActions";
 import { getSeoLevel, seoColors, seoLabels } from "@/lib/seo";
 import AdminSettingsForm from "@/components/admin/AdminSettingsForm";
-import { fetchVercelAnalytics, fetchCalBookings } from "@/lib/analytics";
+import { fetchCalBookings } from "@/lib/analytics";
 
 export const dynamic = "force-dynamic";
 
@@ -42,13 +42,11 @@ export default async function AdminDashboard({
   const seoRed = posts.filter((p) => getSeoLevel(p) === "red").length;
   const seoScore = posts.length > 0 ? Math.round((seoGreen / posts.length) * 100) : 0;
 
-  // Fetch external data only on "sito" tab
-  const [analytics, bookings] = tab === "sito"
-    ? await Promise.all([
-        fetchVercelAnalytics(settings.vercel_token ?? "", settings.vercel_project_id ?? ""),
-        fetchCalBookings(settings.cal_api_key ?? ""),
-      ])
-    : [null, null];
+  const bookings = tab === "sito"
+    ? await fetchCalBookings(settings.cal_api_key ?? "")
+    : null;
+
+  const lookerUrl = settings.looker_studio_url ?? "";
 
   const tabs = [
     { id: "sito", label: "Stato del sito", icon: BarChart3 },
@@ -84,11 +82,11 @@ export default async function AdminDashboard({
       </div>
 
       {/* ── TAB: STATO SITO ── */}
-      {tab === "sito" && analytics && bookings && (
+      {tab === "sito" && (
         <div className="space-y-6">
 
-          {/* Row 1: Blog + SEO + Visite + Visitatori */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Row 1: Articoli + SEO */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-navy/40 uppercase tracking-wide">Articoli</span>
@@ -114,97 +112,82 @@ export default async function AdminDashboard({
                 <span className="text-red-600">{seoRed}✗</span>
               </p>
             </div>
-
-            <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-navy/40 uppercase tracking-wide">Pagine viste</span>
-                <Eye size={15} className="text-steel" />
-              </div>
-              {analytics.error ? (
-                <p className="text-xs text-navy/40 mt-1">{analytics.error}</p>
-              ) : (
-                <>
-                  <p className="text-3xl font-bold text-navy">{analytics.pageviews.toLocaleString("it-IT")}</p>
-                  <p className="text-xs text-navy/40 mt-1">Ultimi 30 giorni</p>
-                </>
-              )}
-            </div>
-
-            <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-navy/40 uppercase tracking-wide">Visitatori</span>
-                <Users size={15} className="text-steel" />
-              </div>
-              {analytics.error ? (
-                <p className="text-xs text-navy/40 mt-1">Configura token</p>
-              ) : (
-                <>
-                  <p className="text-3xl font-bold text-navy">{analytics.visitors.toLocaleString("it-IT")}</p>
-                  <p className="text-xs text-navy/40 mt-1">Ultimi 30 giorni</p>
-                </>
-              )}
-            </div>
           </div>
 
-          {/* Row 2: Pagine più viste + Prenotazioni */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-            {/* Top pages */}
-            <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
-              <h3 className="text-sm font-semibold text-navy mb-4 flex items-center gap-2">
-                <BarChart3 size={15} className="text-steel" /> Pagine più visitate (30 giorni)
+          {/* Analytics: Looker Studio embed */}
+          <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-navy flex items-center gap-2">
+                <BarChart3 size={15} className="text-steel" /> Analytics — Google Looker Studio
               </h3>
-              {analytics.error ? (
-                <div className="text-center py-6">
-                  <p className="text-sm text-navy/40 mb-2">{analytics.error}</p>
-                  <Link href="/admin?tab=impostazioni" className="text-xs font-semibold text-steel hover:text-navy transition-colors">
-                    → Configura Vercel Analytics nelle Impostazioni
-                  </Link>
-                </div>
-              ) : analytics.topPages.length === 0 ? (
-                <p className="text-sm text-navy/40 py-4 text-center">Nessun dato ancora disponibile.</p>
-              ) : (
-                <ul className="space-y-2">
-                  {analytics.topPages.map(({ path, count }) => (
-                    <li key={path} className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-navy truncate font-mono text-xs">{path}</span>
-                      <span className="text-xs font-semibold text-steel shrink-0">{count.toLocaleString("it-IT")} visite</span>
-                    </li>
-                  ))}
-                </ul>
+              {lookerUrl && (
+                <a
+                  href={lookerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-steel hover:text-navy transition-colors"
+                >
+                  Apri in grande <ExternalLink size={11} />
+                </a>
               )}
             </div>
 
-            {/* Prenotazioni */}
-            <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
-              <h3 className="text-sm font-semibold text-navy mb-4 flex items-center gap-2">
-                <CalendarDays size={15} className="text-steel" /> Prossimi appuntamenti
-              </h3>
-              {bookings.error ? (
-                <div className="text-center py-6">
-                  <p className="text-sm text-navy/40 mb-2">{bookings.error}</p>
-                  <Link href="/admin?tab=impostazioni" className="text-xs font-semibold text-steel hover:text-navy transition-colors">
-                    → Configura Cal.com nelle Impostazioni
-                  </Link>
-                </div>
-              ) : bookings.upcoming.length === 0 ? (
-                <p className="text-sm text-navy/40 py-4 text-center">Nessun appuntamento in programma.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {bookings.upcoming.map((b, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-steel/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <Clock size={14} className="text-steel" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-navy">{b.attendee || b.title}</p>
-                        <p className="text-xs text-navy/40">{fmt(b.start)}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            {lookerUrl ? (
+              <div className="rounded-lg overflow-hidden border border-navy/10" style={{ height: 500 }}>
+                <iframe
+                  src={lookerUrl}
+                  width="100%"
+                  height="100%"
+                  allowFullScreen
+                  style={{ border: 0 }}
+                />
+              </div>
+            ) : (
+              <div className="rounded-lg bg-mist border border-navy/10 p-8 text-center space-y-3">
+                <Eye size={28} className="text-steel/40 mx-auto" />
+                <p className="text-sm font-medium text-navy/60">Analytics non ancora configurato</p>
+                <p className="text-xs text-navy/40 max-w-sm mx-auto">
+                  Collega Looker Studio a Google Analytics 4 e incolla l&apos;URL del report nelle Impostazioni per vedere le statistiche qui.
+                </p>
+                <Link
+                  href="/admin?tab=impostazioni"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-steel hover:text-navy transition-colors mt-2"
+                >
+                  → Configura nelle Impostazioni
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Prenotazioni Cal.com */}
+          <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
+            <h3 className="text-sm font-semibold text-navy mb-4 flex items-center gap-2">
+              <CalendarDays size={15} className="text-steel" /> Prossimi appuntamenti
+            </h3>
+            {!bookings || bookings.error ? (
+              <div className="text-center py-6">
+                <p className="text-sm text-navy/40 mb-2">{bookings?.error ?? "Chiave API non configurata"}</p>
+                <Link href="/admin?tab=impostazioni" className="text-xs font-semibold text-steel hover:text-navy transition-colors">
+                  → Configura Cal.com nelle Impostazioni
+                </Link>
+              </div>
+            ) : bookings.upcoming.length === 0 ? (
+              <p className="text-sm text-navy/40 py-4 text-center">Nessun appuntamento in programma.</p>
+            ) : (
+              <ul className="space-y-3">
+                {bookings.upcoming.map((b, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-steel/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <Clock size={14} className="text-steel" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-navy">{b.attendee || b.title}</p>
+                      <p className="text-xs text-navy/40">{fmt(b.start)}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Alert SEO */}
@@ -283,8 +266,7 @@ export default async function AdminDashboard({
         <AdminSettingsForm
           ga4Id={settings.ga4_measurement_id ?? ""}
           calApiKey={settings.cal_api_key ?? ""}
-          vercelToken={settings.vercel_token ?? ""}
-          vercelProjectId={settings.vercel_project_id ?? ""}
+          lookerStudioUrl={settings.looker_studio_url ?? ""}
         />
       )}
     </div>
