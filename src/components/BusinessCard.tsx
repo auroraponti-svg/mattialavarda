@@ -4,12 +4,21 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, UserPlus } from "lucide-react";
 
-const T = 1; // traslazione minima Z per le facce
+// Spessore realistico cartoncino
+const T = 10;
+// Border radius biglietto
+const R = 12;
 
-// Inclinazione a riposo: mostra il bordo superiore e quello sinistro
-const REST   = "rotateX(14deg) rotateY(-8deg)";
-// Dopo il flip: stessa inclinazione ma sul retro
-const FLIPPED = "rotateX(14deg) rotateY(172deg)";
+// Tilt a riposo: si vede il bordo superiore e sinistro
+const TILT_REST    = `rotateX(18deg) rotateY(-20deg)`;
+// Dopo il flip: stesso tilt, lato opposto
+const TILT_FLIPPED = `rotateX(18deg) rotateY(160deg)`;
+
+// Colori bordi realistici cartoncino bianco/navy
+const EDGE_TOP    = "#eef0f5";
+const EDGE_BOTTOM = "#d0d3de";
+const EDGE_LEFT   = "#2a2d52";   // navy, come la banda sinistra del biglietto
+const EDGE_RIGHT  = "#eff1f7";   // bianco, come il lato destro
 
 export default function BusinessCard() {
   const [open, setOpen]       = useState(false);
@@ -21,8 +30,8 @@ export default function BusinessCard() {
 
   useEffect(() => {
     if (!open) { setFlipped(false); setShowCta(false); return; }
-    const t1 = setTimeout(() => setFlipped(true), 700);
-    const t2 = setTimeout(() => setShowCta(true), 2000);
+    const t1 = setTimeout(() => setFlipped(true), 800);
+    const t2 = setTimeout(() => setShowCta(true), 2100);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [open]);
 
@@ -33,35 +42,36 @@ export default function BusinessCard() {
 
   const modal = (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-navy/80 backdrop-blur-sm p-6"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-navy/80 backdrop-blur-sm p-8"
       onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
     >
-      <div className="flex flex-col items-center gap-10 w-full max-w-lg">
+      <div className="flex flex-col items-center gap-12 w-full max-w-md">
 
-        {/* Ombra esterna — fuori dal contesto 3D per non rompere preserve-3d */}
-        <div className="w-full" style={{ filter: "drop-shadow(0 40px 50px rgba(0,0,0,0.65))" }}>
-          {/* Contenitore prospettica */}
-          <div style={{ perspective: "800px", perspectiveOrigin: "50% 40%" }} className="w-full">
-            {/* Carta 3D rotante */}
+        {/* Ombra esterna — fuori dal contesto 3D */}
+        <div
+          className="w-full"
+          style={{ filter: "drop-shadow(0 40px 60px rgba(0,0,0,0.7))" }}
+        >
+          {/* Prospettiva */}
+          <div style={{ perspective: "700px", perspectiveOrigin: "50% 50%" }}>
+            {/* Biglietto 3D rotante */}
             <div
               style={{
                 transformStyle: "preserve-3d",
-                transform: flipped ? FLIPPED : REST,
-                transition: "transform 1100ms cubic-bezier(0.4,0,0.2,1)",
+                transform: flipped ? TILT_FLIPPED : TILT_REST,
+                transition: "transform 1200ms cubic-bezier(0.4,0,0.2,1)",
                 position: "relative",
-                aspectRatio: "7/4",
+                aspectRatio: "1.75",   // proporzione biglietto da visita standard
               }}
             >
               {/* ══ FRONTE ══ */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/bdv-1.png"
-                alt="Biglietto da visita fronte"
+              <div
                 style={{
                   position: "absolute", inset: 0,
-                  width: "100%", height: "100%",
-                  objectFit: "cover", display: "block",
-                  borderRadius: 14,
+                  borderRadius: R,
+                  backgroundImage: "url('/bdv-1.png')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
                   transform: `translateZ(${T / 2}px)`,
@@ -69,21 +79,58 @@ export default function BusinessCard() {
               />
 
               {/* ══ RETRO ══ */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/bdv-2.png"
-                alt="Biglietto da visita retro"
+              <div
                 style={{
                   position: "absolute", inset: 0,
-                  width: "100%", height: "100%",
-                  objectFit: "cover", display: "block",
-                  borderRadius: 14,
+                  borderRadius: R,
+                  backgroundImage: "url('/bdv-2.png')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
                   transform: `rotateY(180deg) translateZ(${T / 2}px)`,
                 }}
               />
 
+              {/* ══ BORDO SUPERIORE ══ */}
+              <div style={{
+                position: "absolute",
+                top: 0, left: R, right: R,
+                height: T,
+                background: EDGE_TOP,
+                transformOrigin: "center top",
+                transform: `rotateX(90deg) translateZ(${T / 2}px)`,
+              }} />
+
+              {/* ══ BORDO INFERIORE ══ */}
+              <div style={{
+                position: "absolute",
+                bottom: 0, left: R, right: R,
+                height: T,
+                background: EDGE_BOTTOM,
+                transformOrigin: "center bottom",
+                transform: `rotateX(-90deg) translateZ(${T / 2}px)`,
+              }} />
+
+              {/* ══ BORDO SINISTRO (navy) ══ */}
+              <div style={{
+                position: "absolute",
+                left: 0, top: R, bottom: R,
+                width: T,
+                background: EDGE_LEFT,
+                transformOrigin: "left center",
+                transform: `rotateY(-90deg) translateZ(${T / 2}px)`,
+              }} />
+
+              {/* ══ BORDO DESTRO (bianco) ══ */}
+              <div style={{
+                position: "absolute",
+                right: 0, top: R, bottom: R,
+                width: T,
+                background: EDGE_RIGHT,
+                transformOrigin: "right center",
+                transform: `rotateY(90deg) translateZ(${T / 2}px)`,
+              }} />
             </div>
           </div>
         </div>
@@ -92,7 +139,7 @@ export default function BusinessCard() {
         <div
           style={{
             opacity: showCta ? 1 : 0,
-            transform: showCta ? "translateY(0)" : "translateY(14px)",
+            transform: showCta ? "translateY(0)" : "translateY(16px)",
             transition: "opacity 500ms ease, transform 500ms ease",
             pointerEvents: showCta ? "auto" : "none",
           }}
@@ -101,7 +148,7 @@ export default function BusinessCard() {
           <a
             href="/mattia-lavarda.vcf"
             download="Mattia Lavarda Osteopata.vcf"
-            className="press inline-flex items-center gap-2.5 bg-steel text-white font-semibold px-7 py-3 rounded-xl hover:bg-navy transition-colors cursor-pointer shadow-lg"
+            className="press inline-flex items-center gap-2.5 bg-steel text-white font-semibold px-8 py-3 rounded-xl hover:bg-navy transition-colors cursor-pointer shadow-lg text-base"
           >
             <UserPlus size={18} aria-hidden="true" />
             Salva il mio contatto
