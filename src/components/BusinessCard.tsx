@@ -5,6 +5,14 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, UserPlus } from "lucide-react";
 
+const T = 7; // spessore in px (cardstock)
+
+// Colori bordi: leggera sfumatura per effetto luce
+const EDGE_LEFT   = "#c8ccd8";
+const EDGE_RIGHT  = "#a0a4b0";
+const EDGE_TOP    = "#d4d8e4";
+const EDGE_BOTTOM = "#9098a8";
+
 export default function BusinessCard() {
   const [open, setOpen] = useState(false);
   const [flipped, setFlipped] = useState(false);
@@ -16,7 +24,7 @@ export default function BusinessCard() {
   useEffect(() => {
     if (!open) { setFlipped(false); setShowCta(false); return; }
     const t1 = setTimeout(() => setFlipped(true), 600);
-    const t2 = setTimeout(() => setShowCta(true), 1800);
+    const t2 = setTimeout(() => setShowCta(true), 1900);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [open]);
 
@@ -30,22 +38,30 @@ export default function BusinessCard() {
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-navy/80 backdrop-blur-sm p-6"
       onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
     >
-      <div className="flex flex-col items-center gap-8 w-full max-w-lg">
+      <div className="flex flex-col items-center gap-10 w-full max-w-lg">
+
         {/* 3D card */}
-        <div style={{ perspective: "1200px" }} className="w-full">
+        <div style={{ perspective: "1000px", perspectiveOrigin: "50% 40%" }} className="w-full">
           <div
             style={{
               transformStyle: "preserve-3d",
-              transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              transition: "transform 900ms cubic-bezier(0.4,0,0.2,1)",
+              transform: flipped
+                ? `rotateX(6deg) rotateY(180deg)`
+                : `rotateX(6deg) rotateY(0deg)`,
+              transition: "transform 1000ms cubic-bezier(0.4,0,0.2,1)",
               position: "relative",
               aspectRatio: "7/4",
+              filter: "drop-shadow(0 28px 40px rgba(0,0,0,0.55))",
             }}
           >
-            {/* Front */}
+            {/* Front face */}
             <div
-              style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
-              className="absolute inset-0 rounded-2xl overflow-hidden shadow-2xl"
+              style={{
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+                transform: `translateZ(${T / 2}px)`,
+              }}
+              className="absolute inset-0 rounded-2xl overflow-hidden"
             >
               <Image
                 src="/bdv-1.png"
@@ -55,14 +71,15 @@ export default function BusinessCard() {
                 sizes="(max-width:640px) calc(100vw - 48px), 512px"
               />
             </div>
-            {/* Back */}
+
+            {/* Back face */}
             <div
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
-                transform: "rotateY(180deg)",
+                transform: `rotateY(180deg) translateZ(${T / 2}px)`,
               }}
-              className="absolute inset-0 rounded-2xl overflow-hidden shadow-2xl"
+              className="absolute inset-0 rounded-2xl overflow-hidden"
             >
               <Image
                 src="/bdv-2.png"
@@ -72,6 +89,51 @@ export default function BusinessCard() {
                 sizes="(max-width:640px) calc(100vw - 48px), 512px"
               />
             </div>
+
+            {/* Left edge */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0, left: 0,
+                width: `${T}px`, height: "100%",
+                background: EDGE_LEFT,
+                transformOrigin: "left center",
+                transform: "rotateY(-90deg)",
+              }}
+            />
+            {/* Right edge */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0, right: 0,
+                width: `${T}px`, height: "100%",
+                background: EDGE_RIGHT,
+                transformOrigin: "right center",
+                transform: "rotateY(90deg)",
+              }}
+            />
+            {/* Top edge */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0, left: 0,
+                width: "100%", height: `${T}px`,
+                background: EDGE_TOP,
+                transformOrigin: "top center",
+                transform: "rotateX(90deg)",
+              }}
+            />
+            {/* Bottom edge */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0, left: 0,
+                width: "100%", height: `${T}px`,
+                background: EDGE_BOTTOM,
+                transformOrigin: "bottom center",
+                transform: "rotateX(-90deg)",
+              }}
+            />
           </div>
         </div>
 
@@ -79,7 +141,7 @@ export default function BusinessCard() {
         <div
           style={{
             opacity: showCta ? 1 : 0,
-            transform: showCta ? "translateY(0)" : "translateY(12px)",
+            transform: showCta ? "translateY(0)" : "translateY(14px)",
             transition: "opacity 500ms ease, transform 500ms ease",
             pointerEvents: showCta ? "auto" : "none",
           }}
