@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, CalendarDays } from "lucide-react";
 import { site } from "@/lib/site";
-import ContactTabs from "@/components/ContactTabs";
+import CalBooking from "@/components/CalBooking";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contatti e Prenotazioni | Mattia Lavarda Osteopata",
@@ -14,82 +15,94 @@ export default function Contatti() {
       {/* Header */}
       <section className="bg-gradient-to-br from-mist to-white py-14 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-navy mb-3">Prenota o contattami</h1>
+          <h1 className="text-4xl font-bold text-navy mb-3">Contatti e prenotazioni</h1>
           <p className="text-navy/60 max-w-lg mx-auto">
-            Fissa il tuo appuntamento online in pochi clic, oppure scrivimi per qualsiasi informazione.
+            Tutti i riferimenti dello studio e la prenotazione online in un unico posto.
           </p>
         </div>
       </section>
 
-      {/* Main: azione principale + sidebar contatti */}
-      <section className="py-12 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
-          {/* Azione principale */}
-          <ContactTabs />
+      {/* 1. CONTATTI in alto — subito visibili */}
+      <section className="px-4 sm:px-6 -mt-8">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a
+            href={site.mapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white rounded-xl border border-navy/10 shadow-sm p-5 hover:border-steel/40 hover:shadow-md transition-all cursor-pointer"
+          >
+            <MapPin size={22} className="text-steel mb-3" aria-hidden="true" />
+            <p className="font-semibold text-navy text-sm">Dove</p>
+            <p className="text-sm text-navy/60 mt-1">{site.address}</p>
+          </a>
+          <a
+            href={`tel:${site.phoneHref}`}
+            className="bg-white rounded-xl border border-navy/10 shadow-sm p-5 hover:border-steel/40 hover:shadow-md transition-all cursor-pointer"
+          >
+            <Phone size={22} className="text-steel mb-3" aria-hidden="true" />
+            <p className="font-semibold text-navy text-sm">Telefono</p>
+            <p className="text-sm text-navy/60 mt-1">{site.phone}</p>
+          </a>
+          <a
+            href={`https://wa.me/${site.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white rounded-xl border border-navy/10 shadow-sm p-5 hover:border-steel/40 hover:shadow-md transition-all cursor-pointer"
+          >
+            <MessageCircle size={22} className="text-[#25D366] mb-3" aria-hidden="true" />
+            <p className="font-semibold text-navy text-sm">WhatsApp</p>
+            <p className="text-sm text-navy/60 mt-1">Scrivimi un messaggio</p>
+          </a>
+          <a
+            href={`mailto:${site.email}`}
+            className="bg-white rounded-xl border border-navy/10 shadow-sm p-5 hover:border-steel/40 hover:shadow-md transition-all cursor-pointer"
+          >
+            <Mail size={22} className="text-steel mb-3" aria-hidden="true" />
+            <p className="font-semibold text-navy text-sm">Email</p>
+            <p className="text-sm text-navy/60 mt-1 break-all">{site.email}</p>
+          </a>
+        </div>
+      </section>
 
-          {/* Sidebar compatta */}
-          <aside className="space-y-4">
-            <div className="bg-white rounded-2xl border border-navy/10 shadow-sm p-6">
-              <h2 className="font-bold text-navy mb-4">Lo studio</h2>
-              <ul className="space-y-4 text-sm">
-                <li className="flex items-start gap-3">
-                  <MapPin size={18} className="text-steel mt-0.5 shrink-0" aria-hidden="true" />
-                  <span className="text-navy/70">
-                    <span className="block font-medium text-navy">{site.studio}</span>
-                    {site.address}
-                  </span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Phone size={18} className="text-steel shrink-0" aria-hidden="true" />
-                  <a href={`tel:${site.phoneHref}`} className="text-navy/70 hover:text-steel transition-colors cursor-pointer">
-                    {site.phone}
-                  </a>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Mail size={18} className="text-steel shrink-0" aria-hidden="true" />
-                  <a href={`mailto:${site.email}`} className="text-navy/70 hover:text-steel transition-colors cursor-pointer break-all">
-                    {site.email}
-                  </a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Clock size={18} className="text-steel mt-0.5 shrink-0" aria-hidden="true" />
-                  <span className="text-navy/70">Solo su appuntamento</span>
-                </li>
-              </ul>
+      {/* Mappa */}
+      <section className="px-4 sm:px-6 mt-6">
+        <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden border border-navy/10 shadow-sm">
+          <iframe
+            src={site.mapsEmbed}
+            title="Mappa dello studio a Samarate"
+            width="100%"
+            height="280"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            style={{ border: 0 }}
+            className="block"
+          />
+        </div>
+      </section>
 
-              <a
-                href={`https://wa.me/${site.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold px-4 py-2.5 rounded-lg hover:brightness-95 transition cursor-pointer"
-              >
-                <MessageCircle size={18} aria-hidden="true" /> Scrivimi su WhatsApp
-              </a>
-            </div>
+      {/* 2. PRENOTAZIONE sotto */}
+      <section className="py-16 px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-2 justify-center mb-2">
+            <CalendarDays size={22} className="text-steel" aria-hidden="true" />
+            <h2 className="text-2xl font-bold text-navy text-center">Prenota online</h2>
+          </div>
+          <p className="text-navy/60 text-center mb-8 max-w-xl mx-auto">
+            Scegli giorno e orario tra le disponibilità. Riceverai una email di conferma con la possibilità
+            di salvare l&apos;appuntamento nel tuo calendario.
+          </p>
+          <CalBooking />
+        </div>
+      </section>
 
-            {/* Mappa */}
-            <a
-              href={site.mapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-2xl overflow-hidden border border-navy/10 shadow-sm group"
-              aria-label="Apri la mappa dello studio su Google Maps"
-            >
-              <iframe
-                src={site.mapsEmbed}
-                title="Mappa dello studio a Samarate"
-                width="100%"
-                height="220"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                style={{ border: 0, pointerEvents: "none" }}
-                className="block"
-              />
-              <span className="flex items-center justify-center gap-1.5 text-sm font-medium text-steel bg-white py-2.5 group-hover:text-navy transition-colors">
-                <MapPin size={15} aria-hidden="true" /> Apri in Google Maps
-              </span>
-            </a>
-          </aside>
+      {/* 3. Form messaggio in fondo */}
+      <section className="bg-mist py-16 px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-navy text-center mb-2">Preferisci scrivere?</h2>
+          <p className="text-navy/60 text-center mb-8">Inviami un messaggio e ti rispondo il prima possibile.</p>
+          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-navy/10">
+            <ContactForm />
+          </div>
         </div>
       </section>
     </>
