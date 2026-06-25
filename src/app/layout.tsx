@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "Mattia Lavarda — Osteopata | Samarate (VA)",
   description:
     "Mattia Lavarda, Osteopata e Chinesiologo. Studio a Samarate (Varese): trattamenti osteopatici personalizzati per dolori, postura, sport e benessere.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
