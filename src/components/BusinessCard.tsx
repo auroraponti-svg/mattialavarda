@@ -33,9 +33,11 @@ export default function BusinessCard() {
     >
       <div className="flex flex-col items-center gap-10 w-full max-w-lg">
 
+        {/* Ombra esterna — FUORI dal contesto 3D, altrimenti annulla preserve-3d */}
+        <div style={{ filter: "drop-shadow(0 28px 44px rgba(0,0,0,0.60))" }} className="w-full">
         {/* Wrapper prospettica */}
         <div style={{ perspective: "900px", perspectiveOrigin: "50% 45%" }} className="w-full">
-          {/* Carta rotante */}
+          {/* Carta rotante — NO filter qui */}
           <div
             style={{
               transformStyle: "preserve-3d",
@@ -45,7 +47,6 @@ export default function BusinessCard() {
               transition: "transform 1050ms cubic-bezier(0.4,0,0.2,1)",
               position: "relative",
               aspectRatio: "7/4",
-              filter: "drop-shadow(0 32px 48px rgba(0,0,0,0.60))",
             }}
           >
             {/* ── FRONTE ── */}
@@ -118,6 +119,7 @@ export default function BusinessCard() {
               transform: "rotateX(-90deg)",
             }} />
           </div>
+        </div>
         </div>
 
         {/* CTA */}
