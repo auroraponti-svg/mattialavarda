@@ -267,6 +267,11 @@ export default async function AdminDashboard({
           ga4Id={settings.ga4_measurement_id ?? ""}
           calApiKey={settings.cal_api_key ?? ""}
           lookerStudioUrl={settings.looker_studio_url ?? ""}
+          socialInstagram={settings.social_instagram ?? ""}
+          socialFacebook={settings.social_facebook ?? ""}
+          socialLinkedin={settings.social_linkedin ?? ""}
+          socialTiktok={settings.social_tiktok ?? ""}
+          socialYoutube={settings.social_youtube ?? ""}
         />
       )}
     </div>
