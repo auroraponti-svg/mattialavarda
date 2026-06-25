@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ImagePlus, Loader2, Save, Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { slugify, type Post } from "@/lib/posts";
+import SeoChecker from "@/components/admin/SeoChecker";
 
 const categorie = ["Generale", "Lombalgia", "Postura", "Sport", "Cefalee", "Benessere", "Info"];
 
@@ -232,6 +233,16 @@ export default function PostEditor({ post }: { post?: Post }) {
           <p className="text-xs text-navy/40 mt-0.5">Inserisci le parole chiave separate da virgola</p>
         </div>
       </div>
+
+      {/* SEO live analysis */}
+      <SeoChecker
+        title={title}
+        metaTitle={metaTitle}
+        metaDescription={metaDescription}
+        keywords={keywords}
+        excerpt={excerpt}
+        content={content}
+      />
 
       {uploading && (
         <p className="text-sm text-steel flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Caricamento immagine…</p>
