@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Activity, Brain, PersonStanding, Dumbbell, HeartPulse, Baby, CheckCircle, ArrowRight } from "lucide-react";
 import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
+import HeroBackground from "@/components/HeroBackground";
 
 const trattamenti = [
   { icon: Activity, titolo: "Dolori muscoloscheletrici", desc: "Cervicalgie, lombalgie, dolori articolari e tensioni muscolari trattati con tecniche manuali mirate." },
@@ -19,7 +20,8 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-mist to-white py-20 px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-gradient-to-br from-mist to-white py-20 px-4 sm:px-6">
+        <HeroBackground />
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1">
             <Reveal delay={0}>
