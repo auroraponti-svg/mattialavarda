@@ -16,9 +16,8 @@ export default function ScrollSpine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Clip from bottom: at scroll 0% → hidden 100% (nothing visible)
-  // at scroll 100% → hidden 0% (fully visible)
-  const hidden = Math.max(0, 100 - progress * 140);
+  // Start 40% visible, complete reveal as user scrolls
+  const hidden = Math.max(0, 60 - progress * 80);
 
   return (
     <div
