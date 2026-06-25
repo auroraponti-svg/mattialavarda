@@ -26,11 +26,6 @@ export default function Home() {
         <HeroBackground />
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1">
-            <Reveal delay={0}>
-              <span className="inline-block bg-steel/10 text-steel text-sm font-semibold px-3 py-1 rounded-full mb-4">
-                Studio a {site.addressShort}
-              </span>
-            </Reveal>
             <Reveal delay={90}>
               <h1 className="text-4xl sm:text-5xl font-bold text-navy leading-tight mb-6">
                 Il movimento è salute,<br />
