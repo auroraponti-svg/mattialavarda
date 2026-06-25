@@ -4,7 +4,6 @@ import Link from "next/link";
 import { GraduationCap, Microscope, HandHeart, ArrowRight } from "lucide-react";
 import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
-import ScrollStones from "@/components/ScrollStones";
 
 export const metadata: Metadata = {
   title: "Chi Sono | Mattia Lavarda Osteopata",
@@ -47,7 +46,6 @@ const esperienza = [
 export default function ChiSono() {
   return (
     <>
-      <ScrollStones />
       {/* Hero */}
       <section className="bg-gradient-to-br from-mist to-white py-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
