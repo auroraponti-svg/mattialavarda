@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, UserPlus } from "lucide-react";
 
-const T = 6;  // spessore cartoncino in px
-const R = 14; // border-radius biglietto in px — i bordi laterali devono stare dentro gli angoli
+const T = 1; // traslazione minima Z per le facce
 
 // Inclinazione a riposo: mostra il bordo superiore e quello sinistro
 const REST   = "rotateX(14deg) rotateY(-8deg)";
@@ -85,45 +84,6 @@ export default function BusinessCard() {
                 }}
               />
 
-              {/* ══ BORDO SUPERIORE — bianco (colore del card in alto) ══ */}
-              <div style={{
-                position: "absolute", top: 0,
-                left: R, right: R,
-                height: `${T}px`,
-                background: "#f5f6fa",
-                transformOrigin: "center top",
-                transform: `rotateX(90deg) translateZ(${T / 2}px)`,
-              }} />
-
-              {/* ══ BORDO INFERIORE — bianco leggermente scurito ══ */}
-              <div style={{
-                position: "absolute", bottom: 0,
-                left: R, right: R,
-                height: `${T}px`,
-                background: "#e0e2ea",
-                transformOrigin: "center bottom",
-                transform: `rotateX(-90deg) translateZ(${T / 2}px)`,
-              }} />
-
-              {/* ══ BORDO SINISTRO — navy (colore della banda sinistra del card) ══ */}
-              <div style={{
-                position: "absolute", left: 0,
-                top: R, bottom: R,
-                width: `${T}px`,
-                background: "#2B2E54",
-                transformOrigin: "left center",
-                transform: `rotateY(-90deg) translateZ(${T / 2}px)`,
-              }} />
-
-              {/* ══ BORDO DESTRO — bianco (colore della parte destra del card) ══ */}
-              <div style={{
-                position: "absolute", right: 0,
-                top: R, bottom: R,
-                width: `${T}px`,
-                background: "#f5f6fa",
-                transformOrigin: "right center",
-                transform: `rotateY(90deg) translateZ(${T / 2}px)`,
-              }} />
             </div>
           </div>
         </div>
