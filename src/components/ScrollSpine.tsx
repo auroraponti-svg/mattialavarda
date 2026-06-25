@@ -16,29 +16,27 @@ export default function ScrollSpine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Start 40% visible, complete reveal as user scrolls
+  // Starts 40% visible, fully revealed as user scrolls
   const hidden = Math.max(0, 60 - progress * 80);
 
   return (
-    <div
-      className="fixed right-0 top-0 h-screen z-10 hidden lg:flex items-center pointer-events-none select-none"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/spine.svg"
+      alt=""
       aria-hidden="true"
-      style={{ width: 200 }}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/spine.svg"
-        alt=""
-        style={{
-          display: "block",
-          height: "90vh",
-          width: "auto",
-          maxWidth: "none",
-          filter:
-            "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7) opacity(0.30)",
-          clipPath: `inset(0 0 ${hidden}% 0)`,
-        }}
-      />
-    </div>
+      className="fixed pointer-events-none select-none hidden lg:block"
+      style={{
+        right: 0,
+        top: "50%",
+        transform: "translateY(-50%)",
+        height: "88vh",
+        width: "auto",
+        zIndex: 10,
+        filter: "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7) opacity(0.28)",
+        clipPath: `inset(0 0 ${hidden}% 0)`,
+        willChange: "clip-path",
+      }}
+    />
   );
 }
