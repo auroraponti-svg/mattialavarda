@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import CursorDot from "@/components/CursorDot";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -32,7 +31,6 @@ export default function RootLayout({
         <Footer />
         <Analytics />
         <GoogleAnalytics />
-        <CursorDot />
       </body>
     </html>
   );

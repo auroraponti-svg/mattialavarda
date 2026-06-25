@@ -82,7 +82,7 @@ export default function Footer() {
           </p>
           <Link
             href="/admin"
-            className="text-xs text-white/20 hover:text-white/50 transition-colors duration-300 cursor-pointer"
+            className="text-xs text-white/35 hover:text-white/70 transition-colors duration-300 cursor-pointer"
           >
             Accesso admin
           </Link>
