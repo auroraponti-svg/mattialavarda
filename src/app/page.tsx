@@ -110,8 +110,8 @@ export default function Home() {
 
       {/* Approccio / banda */}
       <section className="bg-mist py-20 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
-          <Reveal delay={0} className="flex-1">
+        <div className="max-w-4xl mx-auto text-center">
+          <Reveal delay={0}>
             <h2 className="text-3xl font-bold text-navy mb-4">Un approccio che unisce mani e scienza</h2>
             <p className="text-navy/70 leading-relaxed text-lg">
               La mia formazione in osteopatia si intreccia con un solido background in Scienze Motorie e nella
@@ -119,14 +119,14 @@ export default function Home() {
               non solo il sintomo, ma la causa, il movimento e l&apos;equilibrio complessivo della persona.
             </p>
           </Reveal>
-          <Reveal delay={120} className="flex-1 flex justify-center w-full">
-            <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-lg ring-1 ring-navy/10">
+          <Reveal delay={120}>
+            <div className="mt-10 rounded-2xl overflow-hidden shadow-lg ring-1 ring-navy/10">
               <Image
                 src="/immagine-home.svg"
                 alt="Approccio osteopatico"
-                width={600}
-                height={450}
-                className="w-full h-auto object-cover"
+                width={800}
+                height={500}
+                className="w-full h-auto"
               />
             </div>
           </Reveal>
