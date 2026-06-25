@@ -2,7 +2,7 @@ export const site = {
   name: "Mattia Lavarda",
   role: "Osteopata · Chinesiologo",
   studio: "Radici di Loto — Studio di Psicologia e Psicoterapia",
-  address: "Via Giuseppe Verdi 24, 21017 Samarate (VA)",
+  address: "Via Giuseppe Verdi 24, 21017 Samarate (VA) — presso Radici di Loto Studio di Psicologia e Psicoterapia",
   addressShort: "Samarate (VA)",
   phone: "+39 379 125 4272",
   phoneHref: "+393791254272",

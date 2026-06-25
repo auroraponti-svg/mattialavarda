@@ -37,10 +37,7 @@ export default function Contatti() {
               icon: <MapPin size={22} className="text-steel mb-3" aria-hidden="true" />,
               label: "Dove",
               content: (
-                <>
-                  <p className="text-sm text-navy/60 mt-1">presso Radici di Loto Studio di Psicologia e Psicoterapia</p>
-                  <p className="text-xs text-navy/40 mt-0.5">{site.address}</p>
-                </>
+                <p className="text-sm text-navy/60 mt-1">{site.address}</p>
               ),
               delay: 0,
             },
