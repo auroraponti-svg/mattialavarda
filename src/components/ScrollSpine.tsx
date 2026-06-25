@@ -16,8 +16,13 @@ export default function ScrollSpine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Starts 40% visible, fully revealed as user scrolls
-  const hidden = Math.max(0, 60 - progress * 80);
+  // Appare scrollando verso il basso, scompare verso il fondo
+  const fadeIn  = Math.min(progress * 6, 1);                        // 0→1 nel primo 17%
+  const fadeOut = Math.max(0, 1 - (progress - 0.60) * 3.5);        // 1→0 dall'60% al 89%
+  const opacity = fadeIn * fadeOut * 0.30;
+
+  // Clip dal basso: rivela la colonna dall'alto verso il basso mentre si scorre
+  const clipBottom = Math.max(0, 90 - progress * 120);
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -33,9 +38,11 @@ export default function ScrollSpine() {
         height: "88vh",
         width: "auto",
         zIndex: 10,
-        filter: "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7) opacity(0.28)",
-        clipPath: `inset(0 0 ${hidden}% 0)`,
-        willChange: "clip-path",
+        opacity,
+        filter: "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7)",
+        clipPath: `inset(0 0 ${clipBottom}% 0)`,
+        willChange: "opacity, clip-path",
+        transition: "opacity 300ms ease",
       }}
     />
   );
