@@ -5,6 +5,7 @@ import CalBooking from "@/components/CalBooking";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
 import BusinessCard from "@/components/BusinessCard";
+import Reviews from "@/components/Reviews";
 
 export const metadata: Metadata = {
   title: "Contatti e Prenotazioni | Mattia Lavarda Osteopata",
@@ -126,6 +127,8 @@ export default function Contatti() {
           </Reveal>
         </div>
       </section>
+
+      <Reviews carousel />
 
       {/* Form */}
       <section className="bg-mist py-16 px-4 sm:px-6">
