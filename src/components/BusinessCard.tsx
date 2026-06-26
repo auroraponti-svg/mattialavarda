@@ -4,21 +4,14 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, UserPlus } from "lucide-react";
 
-// Spessore realistico cartoncino
-const T = 10;
-// Border radius biglietto
-const R = 12;
+// Misure
+const T = 8;   // spessore cartoncino px
+const R = 12;  // border-radius px
 
-// Tilt a riposo: si vede il bordo superiore e sinistro
-const TILT_REST    = `rotateX(18deg) rotateY(-20deg)`;
-// Dopo il flip: stesso tilt, lato opposto
-const TILT_FLIPPED = `rotateX(18deg) rotateY(160deg)`;
-
-// Colori bordi realistici cartoncino bianco/navy
-const EDGE_TOP    = "#eef0f5";
-const EDGE_BOTTOM = "#d0d3de";
-const EDGE_LEFT   = "#2a2d52";   // navy, come la banda sinistra del biglietto
-const EDGE_RIGHT  = "#eff1f7";   // bianco, come il lato destro
+// Inclinazione a riposo: si vedono bordo alto e sinistro
+const REST    = "rotateX(20deg) rotateY(-22deg)";
+// Dopo il flip: specchiato sull'altro lato
+const FLIPPED = "rotateX(20deg) rotateY(158deg)";
 
 export default function BusinessCard() {
   const [open, setOpen]       = useState(false);
@@ -30,8 +23,8 @@ export default function BusinessCard() {
 
   useEffect(() => {
     if (!open) { setFlipped(false); setShowCta(false); return; }
-    const t1 = setTimeout(() => setFlipped(true), 800);
-    const t2 = setTimeout(() => setShowCta(true), 2100);
+    const t1 = setTimeout(() => setFlipped(true), 700);
+    const t2 = setTimeout(() => setShowCta(true), 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [open]);
 
@@ -40,40 +33,44 @@ export default function BusinessCard() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  // Stile base per le facce — usa clip-path invece di overflow:hidden
+  // così i border-radius non rompono il contesto preserve-3d
+  const faceBase: React.CSSProperties = {
+    position: "absolute",
+    inset: 0,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    clipPath: `inset(0 round ${R}px)`,
+    backfaceVisibility: "hidden",
+    WebkitBackfaceVisibility: "hidden",
+  };
+
   const modal = (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-navy/80 backdrop-blur-sm p-8"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-navy/85 backdrop-blur-sm p-8"
       onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
     >
       <div className="flex flex-col items-center gap-12 w-full max-w-md">
 
-        {/* Ombra esterna — fuori dal contesto 3D */}
-        <div
-          className="w-full"
-          style={{ filter: "drop-shadow(0 40px 60px rgba(0,0,0,0.7))" }}
-        >
+        {/* Ombra — FUORI dal contesto 3D (filter rompe preserve-3d) */}
+        <div className="w-full" style={{ filter: "drop-shadow(0 50px 70px rgba(0,0,0,0.8))" }}>
           {/* Prospettiva */}
           <div style={{ perspective: "700px", perspectiveOrigin: "50% 50%" }}>
-            {/* Biglietto 3D rotante */}
+            {/* Carta 3D */}
             <div
               style={{
                 transformStyle: "preserve-3d",
-                transform: flipped ? TILT_FLIPPED : TILT_REST,
+                transform: flipped ? FLIPPED : REST,
                 transition: "transform 1200ms cubic-bezier(0.4,0,0.2,1)",
                 position: "relative",
-                aspectRatio: "1.75",   // proporzione biglietto da visita standard
+                aspectRatio: "1.75",
               }}
             >
               {/* ══ FRONTE ══ */}
               <div
                 style={{
-                  position: "absolute", inset: 0,
-                  borderRadius: R,
+                  ...faceBase,
                   backgroundImage: "url('/bdv-1.png')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backfaceVisibility: "hidden",
-                  WebkitBackfaceVisibility: "hidden",
                   transform: `translateZ(${T / 2}px)`,
                 }}
               />
@@ -81,53 +78,44 @@ export default function BusinessCard() {
               {/* ══ RETRO ══ */}
               <div
                 style={{
-                  position: "absolute", inset: 0,
-                  borderRadius: R,
+                  ...faceBase,
                   backgroundImage: "url('/bdv-2.png')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backfaceVisibility: "hidden",
-                  WebkitBackfaceVisibility: "hidden",
                   transform: `rotateY(180deg) translateZ(${T / 2}px)`,
                 }}
               />
 
-              {/* ══ BORDO SUPERIORE ══ */}
+              {/* ══ BORDO ALTO — cartoncino chiaro ══ */}
               <div style={{
                 position: "absolute",
-                top: 0, left: R, right: R,
-                height: T,
-                background: EDGE_TOP,
+                top: 0, left: R, right: R, height: T,
+                background: "linear-gradient(90deg,#e2e6f0,#eef0f8,#e2e6f0)",
                 transformOrigin: "center top",
                 transform: `rotateX(90deg) translateZ(${T / 2}px)`,
               }} />
 
-              {/* ══ BORDO INFERIORE ══ */}
+              {/* ══ BORDO BASSO — leggermente scuro ══ */}
               <div style={{
                 position: "absolute",
-                bottom: 0, left: R, right: R,
-                height: T,
-                background: EDGE_BOTTOM,
+                bottom: 0, left: R, right: R, height: T,
+                background: "linear-gradient(90deg,#c0c4d4,#ccd0e0,#c0c4d4)",
                 transformOrigin: "center bottom",
                 transform: `rotateX(-90deg) translateZ(${T / 2}px)`,
               }} />
 
-              {/* ══ BORDO SINISTRO (navy) ══ */}
+              {/* ══ BORDO SINISTRO — navy come la banda sinistra ══ */}
               <div style={{
                 position: "absolute",
-                left: 0, top: R, bottom: R,
-                width: T,
-                background: EDGE_LEFT,
+                left: 0, top: R, bottom: R, width: T,
+                background: "linear-gradient(180deg,#323660,#2b2e54,#24274a)",
                 transformOrigin: "left center",
                 transform: `rotateY(-90deg) translateZ(${T / 2}px)`,
               }} />
 
-              {/* ══ BORDO DESTRO (bianco) ══ */}
+              {/* ══ BORDO DESTRO — bianco come la parte destra ══ */}
               <div style={{
                 position: "absolute",
-                right: 0, top: R, bottom: R,
-                width: T,
-                background: EDGE_RIGHT,
+                right: 0, top: R, bottom: R, width: T,
+                background: "linear-gradient(180deg,#e8ecf4,#dde2ee,#d4d9e8)",
                 transformOrigin: "right center",
                 transform: `rotateY(90deg) translateZ(${T / 2}px)`,
               }} />
@@ -135,7 +123,7 @@ export default function BusinessCard() {
           </div>
         </div>
 
-        {/* CTA */}
+        {/* CTA — appare dopo il flip */}
         <div
           style={{
             opacity: showCta ? 1 : 0,
