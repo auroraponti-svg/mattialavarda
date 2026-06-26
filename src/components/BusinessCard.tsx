@@ -84,41 +84,6 @@ export default function BusinessCard() {
                 }}
               />
 
-              {/* ══ BORDO ALTO — cartoncino chiaro ══ */}
-              <div style={{
-                position: "absolute",
-                top: 0, left: R, right: R, height: T,
-                background: "linear-gradient(90deg,#e2e6f0,#eef0f8,#e2e6f0)",
-                transformOrigin: "center top",
-                transform: `rotateX(90deg) translateZ(${T / 2}px)`,
-              }} />
-
-              {/* ══ BORDO BASSO — leggermente scuro ══ */}
-              <div style={{
-                position: "absolute",
-                bottom: 0, left: R, right: R, height: T,
-                background: "linear-gradient(90deg,#c0c4d4,#ccd0e0,#c0c4d4)",
-                transformOrigin: "center bottom",
-                transform: `rotateX(-90deg) translateZ(${T / 2}px)`,
-              }} />
-
-              {/* ══ BORDO SINISTRO — navy come la banda sinistra ══ */}
-              <div style={{
-                position: "absolute",
-                left: 0, top: R, bottom: R, width: T,
-                background: "linear-gradient(180deg,#323660,#2b2e54,#24274a)",
-                transformOrigin: "left center",
-                transform: `rotateY(-90deg) translateZ(${T / 2}px)`,
-              }} />
-
-              {/* ══ BORDO DESTRO — bianco come la parte destra ══ */}
-              <div style={{
-                position: "absolute",
-                right: 0, top: R, bottom: R, width: T,
-                background: "linear-gradient(180deg,#e8ecf4,#dde2ee,#d4d9e8)",
-                transformOrigin: "right center",
-                transform: `rotateY(90deg) translateZ(${T / 2}px)`,
-              }} />
             </div>
           </div>
         </div>
