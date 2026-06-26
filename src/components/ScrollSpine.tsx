@@ -32,7 +32,7 @@ export default function ScrollSpine() {
       aria-hidden="true"
       className="fixed pointer-events-none select-none hidden lg:block"
       style={{
-        right: "-60px",
+        right: 0,
         top: "50%",
         transform: "translateY(-50%)",
         height: "88vh",
