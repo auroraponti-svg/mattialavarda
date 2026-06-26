@@ -32,12 +32,12 @@ export default function ScrollSpine() {
       aria-hidden="true"
       className="fixed pointer-events-none select-none hidden lg:block"
       style={{
-        right: 0,
+        right: "-60px",
         top: "50%",
         transform: "translateY(-50%)",
         height: "88vh",
         width: "auto",
-        zIndex: 10,
+        zIndex: 0,
         opacity,
         filter: "sepia(1) saturate(2) hue-rotate(195deg) brightness(0.7)",
         clipPath: `inset(0 0 ${clipBottom}% 0)`,
