@@ -23,6 +23,13 @@ const PLACEHOLDERS: Review[] = [
     date: "2024-12-01",
     source: "placeholder",
   },
+  {
+    author: "Viviana",
+    rating: 5,
+    text: "Per me che dopo la palestra ho spesso dolori muscolari e contratture, Mattia è un toccasana!",
+    date: "2025-01-01",
+    source: "placeholder",
+  },
 ];
 
 async function fetchGoogleReviews(): Promise<Review[]> {
@@ -61,11 +68,17 @@ async function fetchGoogleReviews(): Promise<Review[]> {
 }
 
 export async function GET() {
+  const reviewUrl = process.env.GMB_REVIEW_URL ?? null;
+
   try {
     const google = await fetchGoogleReviews();
     const reviews = google.length > 0 ? google : PLACEHOLDERS;
-    return NextResponse.json({ reviews, source: google.length > 0 ? "google" : "placeholder" });
+    return NextResponse.json({
+      reviews,
+      source: google.length > 0 ? "google" : "placeholder",
+      reviewUrl,
+    });
   } catch {
-    return NextResponse.json({ reviews: PLACEHOLDERS, source: "placeholder" });
+    return NextResponse.json({ reviews: PLACEHOLDERS, source: "placeholder", reviewUrl });
   }
 }

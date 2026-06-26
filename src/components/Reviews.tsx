@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
+import { Star, PenLine } from "lucide-react";
 import type { Review } from "@/app/api/reviews/route";
 import Reveal from "./Reveal";
 
@@ -22,13 +22,15 @@ function StarRow({ rating }: { rating: number }) {
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewUrl, setReviewUrl] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     fetch("/api/reviews")
       .then((r) => r.json())
-      .then(({ reviews }) => {
+      .then(({ reviews, reviewUrl }) => {
         setReviews(reviews);
+        setReviewUrl(reviewUrl ?? null);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
@@ -45,6 +47,22 @@ export default function Reviews() {
             <p className="text-navy/60 text-sm">Recensioni verificate su Google</p>
           </div>
         </Reveal>
+
+        {reviewUrl && (
+          <Reveal delay={60}>
+            <div className="flex justify-center mb-10">
+              <a
+                href={reviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="press inline-flex items-center gap-2 bg-steel text-white font-semibold px-6 py-3 rounded-xl hover:bg-navy transition-colors shadow-sm text-sm"
+              >
+                <PenLine size={16} aria-hidden="true" />
+                Scrivi una recensione
+              </a>
+            </div>
+          </Reveal>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {reviews.map((review, i) => (
