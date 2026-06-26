@@ -5,7 +5,7 @@ import { Save, Loader2, CheckCircle2, Eye, EyeOff, ExternalLink, BarChart2, Cale
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
-  ga4Id: string;
+  gtmId: string;
   calApiKey: string;
   lookerStudioUrl: string;
   socialInstagram: string;
@@ -30,12 +30,12 @@ function SectionHeader({ icon: Icon, title, description }: { icon: React.Element
 }
 
 export default function AdminSettingsForm({
-  ga4Id, calApiKey, lookerStudioUrl,
+  gtmId, calApiKey, lookerStudioUrl,
   socialInstagram, socialFacebook, socialLinkedin, socialTiktok, socialYoutube,
 }: Props) {
   const supabase = createClient();
 
-  const [ga4, setGa4] = useState(ga4Id);
+  const [gtm, setGtm] = useState(gtmId);
   const [cal, setCal] = useState(calApiKey);
   const [looker, setLooker] = useState(lookerStudioUrl);
   const [instagram, setInstagram] = useState(socialInstagram);
@@ -51,7 +51,7 @@ export default function AdminSettingsForm({
   async function save() {
     setSaving(true);
     const updates = [
-      { key: "ga4_measurement_id", value: ga4.trim() },
+      { key: "gtm_container_id", value: gtm.trim() },
       { key: "cal_api_key", value: cal.trim() },
       { key: "looker_studio_url", value: looker.trim() },
       { key: "social_instagram", value: instagram.trim() },
@@ -83,9 +83,9 @@ export default function AdminSettingsForm({
         />
 
         <div>
-          <label className="block text-xs font-medium text-navy/70 mb-1">Google Analytics 4 — Measurement ID</label>
-          <input value={ga4} onChange={e => setGa4(e.target.value)} placeholder="G-XXXXXXXXXX" className={monoClass} />
-          <p className="text-xs text-navy/40 mt-1">GA4 → Amministrazione → Flussi di dati</p>
+          <label className="block text-xs font-medium text-navy/70 mb-1">Google Tag Manager — Container ID</label>
+          <input value={gtm} onChange={e => setGtm(e.target.value)} placeholder="GTM-XXXXXXX" className={monoClass} />
+          <p className="text-xs text-navy/40 mt-1">tagmanager.google.com → il tuo container → ID in alto a destra</p>
         </div>
 
         <div>

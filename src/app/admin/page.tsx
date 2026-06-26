@@ -264,7 +264,7 @@ export default async function AdminDashboard({
       {/* ── TAB: IMPOSTAZIONI ── */}
       {tab === "impostazioni" && (
         <AdminSettingsForm
-          ga4Id={settings.ga4_measurement_id ?? ""}
+          gtmId={settings.gtm_container_id ?? ""}
           calApiKey={settings.cal_api_key ?? ""}
           lookerStudioUrl={settings.looker_studio_url ?? ""}
           socialInstagram={settings.social_instagram ?? ""}
