@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
 import HeroBackground from "@/components/HeroBackground";
 import ScrollSpine from "@/components/ScrollSpine";
+import Reviews from "@/components/Reviews";
 
 const trattamenti = [
   { icon: Activity, titolo: "Dolori muscoloscheletrici", desc: "Cervicalgie, lombalgie, dolori articolari e tensioni muscolari trattati con tecniche manuali mirate." },
@@ -127,6 +128,8 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+
+      <Reviews />
 
       {/* CTA */}
       <section className="py-16 px-4 sm:px-6 bg-navy">

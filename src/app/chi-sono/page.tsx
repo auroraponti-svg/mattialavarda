@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GraduationCap, Microscope, HandHeart, ArrowRight } from "lucide-react";
 import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
+import Reviews from "@/components/Reviews";
 
 export const metadata: Metadata = {
   title: "Chi Sono | Mattia Lavarda Osteopata",
@@ -138,6 +139,8 @@ export default function ChiSono() {
           </div>
         </div>
       </section>
+
+      <Reviews />
 
       {/* CTA */}
       <section className="py-16 px-4 sm:px-6 bg-navy">
