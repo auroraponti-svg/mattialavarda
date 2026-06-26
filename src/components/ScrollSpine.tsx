@@ -19,7 +19,7 @@ export default function ScrollSpine() {
   // Appare scrollando verso il basso, scompare verso il fondo
   const fadeIn  = Math.min(progress * 6, 1);                        // 0→1 nel primo 17%
   const fadeOut = Math.max(0, 1 - (progress - 0.60) * 3.5);        // 1→0 dall'60% al 89%
-  const opacity = fadeIn * fadeOut * 0.30;
+  const opacity = fadeIn * fadeOut * 0.15;
 
   // Clip dal basso: rivela la colonna dall'alto verso il basso mentre si scorre
   const clipBottom = Math.max(0, 90 - progress * 120);
