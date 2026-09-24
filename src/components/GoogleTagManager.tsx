@@ -1,12 +1,12 @@
 import Script from "next/script";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export default async function GoogleTagManager() {
   // Il DB Supabase su piano free può andare in pausa: se la query fallisce
   // non deve far crashare il layout (e con esso ogni pagina del sito).
   let id: string | undefined;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data } = await supabase
       .from("site_settings")
       .select("value")

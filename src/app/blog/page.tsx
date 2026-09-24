@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { formatDate, type Post } from "@/lib/posts";
 import Reveal from "@/components/Reveal";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function Blog() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("posts")
     .select("*")
