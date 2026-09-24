@@ -2,14 +2,21 @@ import Script from "next/script";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function GoogleTagManager() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("site_settings")
-    .select("value")
-    .eq("key", "gtm_container_id")
-    .maybeSingle();
+  // Il DB Supabase su piano free può andare in pausa: se la query fallisce
+  // non deve far crashare il layout (e con esso ogni pagina del sito).
+  let id: string | undefined;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "gtm_container_id")
+      .maybeSingle();
+    id = data?.value?.trim();
+  } catch {
+    return null;
+  }
 
-  const id = data?.value?.trim();
   if (!id) return null;
 
   return (
