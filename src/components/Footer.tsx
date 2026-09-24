@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, ShieldCheck, Cookie } from "lucide-react";
 import { site } from "@/lib/site";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 function InstagramIcon() {
   return (
@@ -54,13 +54,15 @@ const socialConfig = [
 ];
 
 export default async function Footer() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: settingsData } = await supabase.from("site_settings").select("key, value");
   const settings = Object.fromEntries(
     (settingsData ?? []).map((r: { key: string; value: string }) => [r.key, r.value])
   );
 
   const activeSocials = socialConfig.filter(({ key }) => settings[key]);
+  const privacyUrl = settings["iubenda_privacy_url"];
+  const cookieUrl = settings["iubenda_cookie_url"];
 
   return (
     <footer className="bg-navy text-white/80 mt-auto">
@@ -150,10 +152,41 @@ export default async function Footer() {
         )}
       </div>
 
-      <div className="border-t border-white/10 py-4 text-center">
-        <p className="text-xs text-white/40">
-          &copy; {new Date().getFullYear()} {site.name} — Osteopata. Tutti i diritti riservati.
-        </p>
+      <div className="border-t border-white/10 py-5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-white/40 text-center sm:text-left">
+            &copy; {new Date().getFullYear()} {site.name} — Osteopata · P.IVA {site.vat}
+            <br className="sm:hidden" />
+            <span className="hidden sm:inline"> · </span>Tutti i diritti riservati.
+          </p>
+
+          {(privacyUrl || cookieUrl) && (
+            <div className="flex items-center gap-2.5">
+              {privacyUrl && (
+                <a
+                  href={privacyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="inline-flex items-center gap-1.5 bg-white/95 text-navy text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-white transition-colors cursor-pointer"
+                >
+                  <ShieldCheck size={13} className="text-steel" aria-hidden="true" />
+                  Privacy Policy
+                </a>
+              )}
+              {cookieUrl && (
+                <a
+                  href={cookieUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="inline-flex items-center gap-1.5 bg-white/95 text-navy text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-white transition-colors cursor-pointer"
+                >
+                  <Cookie size={13} className="text-steel" aria-hidden="true" />
+                  Cookie Policy
+                </a>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </footer>
   );

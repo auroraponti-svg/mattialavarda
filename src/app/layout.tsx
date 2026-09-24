@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleTagManager from "@/components/GoogleTagManager";
+import IubendaConsent from "@/components/IubendaConsent";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
         <Footer />
         <Analytics />
         <GoogleTagManager />
+        <IubendaConsent />
       </body>
     </html>
   );

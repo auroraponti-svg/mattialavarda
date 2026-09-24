@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Loader2, CheckCircle2, Eye, EyeOff, ExternalLink, BarChart2, Calendar, Share2, Globe } from "lucide-react";
+import { Save, Loader2, CheckCircle2, Eye, EyeOff, ExternalLink, BarChart2, Calendar, Share2, Globe, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   gtmId: string;
   calApiKey: string;
   lookerStudioUrl: string;
+  iubendaScript: string;
+  iubendaPrivacyUrl: string;
+  iubendaCookieUrl: string;
   socialInstagram: string;
   socialFacebook: string;
   socialLinkedin: string;
@@ -31,6 +34,7 @@ function SectionHeader({ icon: Icon, title, description }: { icon: React.Element
 
 export default function AdminSettingsForm({
   gtmId, calApiKey, lookerStudioUrl,
+  iubendaScript, iubendaPrivacyUrl, iubendaCookieUrl,
   socialInstagram, socialFacebook, socialLinkedin, socialTiktok, socialYoutube,
 }: Props) {
   const supabase = createClient();
@@ -38,6 +42,9 @@ export default function AdminSettingsForm({
   const [gtm, setGtm] = useState(gtmId);
   const [cal, setCal] = useState(calApiKey);
   const [looker, setLooker] = useState(lookerStudioUrl);
+  const [iubScript, setIubScript] = useState(iubendaScript);
+  const [iubPrivacy, setIubPrivacy] = useState(iubendaPrivacyUrl);
+  const [iubCookie, setIubCookie] = useState(iubendaCookieUrl);
   const [instagram, setInstagram] = useState(socialInstagram);
   const [facebook, setFacebook] = useState(socialFacebook);
   const [linkedin, setLinkedin] = useState(socialLinkedin);
@@ -54,6 +61,9 @@ export default function AdminSettingsForm({
       { key: "gtm_container_id", value: gtm.trim() },
       { key: "cal_api_key", value: cal.trim() },
       { key: "looker_studio_url", value: looker.trim() },
+      { key: "iubenda_script", value: iubScript.trim() },
+      { key: "iubenda_privacy_url", value: iubPrivacy.trim() },
+      { key: "iubenda_cookie_url", value: iubCookie.trim() },
       { key: "social_instagram", value: instagram.trim() },
       { key: "social_facebook", value: facebook.trim() },
       { key: "social_linkedin", value: linkedin.trim() },
@@ -96,6 +106,41 @@ export default function AdminSettingsForm({
             {" · "}File → Incorpora report → copia l&apos;URL src dell&apos;iframe
           </p>
         </div>
+      </div>
+
+      {/* ── Privacy & Cookie (iubenda) ── */}
+      <div className="bg-white rounded-xl border border-navy/10 p-6 space-y-5">
+        <SectionHeader
+          icon={ShieldCheck}
+          title="Privacy & Cookie (iubenda)"
+          description="Banner di consenso all'ingresso e link alle policy nel footer"
+        />
+
+        <div>
+          <label className="block text-xs font-medium text-navy/70 mb-1">Codice banner cookie</label>
+          <textarea
+            value={iubScript}
+            onChange={e => setIubScript(e.target.value)}
+            placeholder="Incolla qui il codice del banner cookie fornito da iubenda (i tag <script>…)"
+            rows={5}
+            className={monoClass + " resize-y"}
+          />
+          <p className="text-xs text-navy/40 mt-1">
+            iubenda → il tuo sito → Cookie Solution → &quot;Incorpora&quot;. Incolla l&apos;intero blocco: il popup comparirà automaticamente all&apos;ingresso.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Link Privacy Policy</label>
+            <input value={iubPrivacy} onChange={e => setIubPrivacy(e.target.value)} placeholder="https://www.iubenda.com/privacy-policy/..." className={monoClass} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Link Cookie Policy</label>
+            <input value={iubCookie} onChange={e => setIubCookie(e.target.value)} placeholder="https://www.iubenda.com/privacy-policy/.../cookie-policy" className={monoClass} />
+          </div>
+        </div>
+        <p className="text-xs text-navy/40">I due pulsanti compaiono nel footer solo quando i link sono inseriti.</p>
       </div>
 
       {/* ── Prenotazioni ── */}

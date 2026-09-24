@@ -267,6 +267,9 @@ export default async function AdminDashboard({
           gtmId={settings.gtm_container_id ?? ""}
           calApiKey={settings.cal_api_key ?? ""}
           lookerStudioUrl={settings.looker_studio_url ?? ""}
+          iubendaScript={settings.iubenda_script ?? ""}
+          iubendaPrivacyUrl={settings.iubenda_privacy_url ?? ""}
+          iubendaCookieUrl={settings.iubenda_cookie_url ?? ""}
           socialInstagram={settings.social_instagram ?? ""}
           socialFacebook={settings.social_facebook ?? ""}
           socialLinkedin={settings.social_linkedin ?? ""}
