@@ -6,17 +6,29 @@ import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   gtmId: string;
-  calApiKey: string;
   lookerStudioUrl: string;
   iubendaScript: string;
   iubendaPrivacyUrl: string;
   iubendaCookieUrl: string;
+  bookingDuration: string;
+  bookingBuffer: string;
+  bookingStart: string;
+  bookingEnd: string;
+  bookingDays: string;
+  bookingLeadHours: string;
+  bookingEmails: string;
+  googleConnected: boolean;
   socialInstagram: string;
   socialFacebook: string;
   socialLinkedin: string;
   socialTiktok: string;
   socialYoutube: string;
 };
+
+const DAY_LABELS: { n: number; label: string }[] = [
+  { n: 1, label: "Lun" }, { n: 2, label: "Mar" }, { n: 3, label: "Mer" },
+  { n: 4, label: "Gio" }, { n: 5, label: "Ven" }, { n: 6, label: "Sab" }, { n: 7, label: "Dom" },
+];
 
 function SectionHeader({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description?: React.ReactNode }) {
   return (
@@ -33,18 +45,37 @@ function SectionHeader({ icon: Icon, title, description }: { icon: React.Element
 }
 
 export default function AdminSettingsForm({
-  gtmId, calApiKey, lookerStudioUrl,
+  gtmId, lookerStudioUrl,
   iubendaScript, iubendaPrivacyUrl, iubendaCookieUrl,
+  bookingDuration, bookingBuffer, bookingStart, bookingEnd, bookingDays, bookingLeadHours, bookingEmails, googleConnected,
   socialInstagram, socialFacebook, socialLinkedin, socialTiktok, socialYoutube,
 }: Props) {
   const supabase = createClient();
 
   const [gtm, setGtm] = useState(gtmId);
-  const [cal, setCal] = useState(calApiKey);
   const [looker, setLooker] = useState(lookerStudioUrl);
   const [iubScript, setIubScript] = useState(iubendaScript);
   const [iubPrivacy, setIubPrivacy] = useState(iubendaPrivacyUrl);
   const [iubCookie, setIubCookie] = useState(iubendaCookieUrl);
+
+  const [bkDuration, setBkDuration] = useState(bookingDuration || "60");
+  const [bkBuffer, setBkBuffer] = useState(bookingBuffer || "10");
+  const [bkStart, setBkStart] = useState(bookingStart || "09:00");
+  const [bkEnd, setBkEnd] = useState(bookingEnd || "19:00");
+  const [bkDays, setBkDays] = useState<number[]>(
+    (bookingDays || "1,2,3,4,5").split(",").map(Number).filter((n) => n >= 1 && n <= 7)
+  );
+  const [bkLead, setBkLead] = useState(bookingLeadHours || "2");
+  const [bkEmails, setBkEmails] = useState(bookingEmails || "all");
+
+  function toggleDay(n: number) {
+    setBkDays((prev) => (prev.includes(n) ? prev.filter((d) => d !== n) : [...prev, n].sort()));
+  }
+
+  async function disconnectGoogle() {
+    await fetch("/api/google/disconnect", { method: "POST" });
+    window.location.href = "/admin?tab=impostazioni&google=disconnected";
+  }
   const [instagram, setInstagram] = useState(socialInstagram);
   const [facebook, setFacebook] = useState(socialFacebook);
   const [linkedin, setLinkedin] = useState(socialLinkedin);
@@ -59,8 +90,14 @@ export default function AdminSettingsForm({
     setSaving(true);
     const updates = [
       { key: "gtm_container_id", value: gtm.trim() },
-      { key: "cal_api_key", value: cal.trim() },
       { key: "looker_studio_url", value: looker.trim() },
+      { key: "booking_duration", value: bkDuration.trim() },
+      { key: "booking_buffer", value: bkBuffer.trim() },
+      { key: "booking_start", value: bkStart.trim() },
+      { key: "booking_end", value: bkEnd.trim() },
+      { key: "booking_days", value: bkDays.join(",") },
+      { key: "booking_lead_hours", value: bkLead.trim() },
+      { key: "booking_emails", value: bkEmails },
       { key: "iubenda_script", value: iubScript.trim() },
       { key: "iubenda_privacy_url", value: iubPrivacy.trim() },
       { key: "iubenda_cookie_url", value: iubCookie.trim() },
@@ -143,24 +180,81 @@ export default function AdminSettingsForm({
         <p className="text-xs text-navy/40">I due pulsanti compaiono nel footer solo quando i link sono inseriti.</p>
       </div>
 
-      {/* ── Prenotazioni ── */}
+      {/* ── Prenotazioni (Google Calendar) ── */}
       <div className="bg-white rounded-xl border border-navy/10 p-6 space-y-5">
         <SectionHeader
           icon={Calendar}
-          title="Prenotazioni"
-          description="Cal.com — agenda e appuntamenti online"
+          title="Prenotazioni (Google Calendar)"
+          description="Il pannello di prenotazione legge gli impegni dal calendario di Mattia e crea gli appuntamenti"
         />
 
+        {/* Stato collegamento */}
+        <div className={`flex items-center justify-between gap-3 rounded-lg px-4 py-3 ${googleConnected ? "bg-green-50 border border-green-200" : "bg-amber-50 border border-amber-200"}`}>
+          <div className="flex items-center gap-2 text-sm">
+            <span className={`w-2 h-2 rounded-full ${googleConnected ? "bg-green-500" : "bg-amber-500"}`} />
+            <span className={googleConnected ? "text-green-800" : "text-amber-800"}>
+              {googleConnected ? "Google Calendar collegato" : "Google Calendar non ancora collegato"}
+            </span>
+          </div>
+          {googleConnected ? (
+            <button onClick={disconnectGoogle} className="text-xs font-semibold text-navy/60 hover:text-navy underline cursor-pointer">
+              Scollega
+            </button>
+          ) : (
+            <a href="/api/google/connect" className="text-xs font-semibold bg-steel text-white px-3 py-1.5 rounded-md hover:bg-navy transition-colors cursor-pointer">
+              Collega Google Calendar
+            </a>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Durata (min)</label>
+            <input value={bkDuration} onChange={e => setBkDuration(e.target.value)} inputMode="numeric" className={inputClass} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Buffer (min)</label>
+            <input value={bkBuffer} onChange={e => setBkBuffer(e.target.value)} inputMode="numeric" className={inputClass} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Apertura</label>
+            <input value={bkStart} onChange={e => setBkStart(e.target.value)} placeholder="09:00" className={inputClass} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Chiusura</label>
+            <input value={bkEnd} onChange={e => setBkEnd(e.target.value)} placeholder="19:00" className={inputClass} />
+          </div>
+        </div>
+
         <div>
-          <label className="block text-xs font-medium text-navy/70 mb-1">Cal.com — API Key</label>
-          <input
-            value={cal}
-            onChange={e => setCal(e.target.value)}
-            placeholder="cal_live_xxxxxxxxxxxx"
-            type={showSecrets ? "text" : "password"}
-            className={monoClass}
-          />
-          <p className="text-xs text-navy/40 mt-1">Cal.com → Impostazioni → Sviluppatore → Chiavi API</p>
+          <label className="block text-xs font-medium text-navy/70 mb-2">Giorni lavorativi</label>
+          <div className="flex flex-wrap gap-2">
+            {DAY_LABELS.map(({ n, label }) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => toggleDay(n)}
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${bkDays.includes(n) ? "bg-steel text-white border-steel" : "bg-white text-navy/60 border-navy/15 hover:border-steel/40"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Preavviso minimo (ore)</label>
+            <input value={bkLead} onChange={e => setBkLead(e.target.value)} inputMode="numeric" className={inputClass} />
+            <p className="text-xs text-navy/40 mt-1">Quanto tempo prima si può prenotare l&apos;ultimo slot.</p>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-navy/70 mb-1">Email di conferma</label>
+            <select value={bkEmails} onChange={e => setBkEmails(e.target.value)} className={inputClass}>
+              <option value="all">Al paziente e a Mattia</option>
+              <option value="owner">Solo a Mattia</option>
+            </select>
+          </div>
         </div>
       </div>
 

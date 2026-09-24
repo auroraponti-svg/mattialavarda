@@ -10,6 +10,7 @@ import { LogoutButton, DeleteButton } from "@/components/admin/AdminActions";
 import { getSeoLevel, seoColors, seoLabels } from "@/lib/seo";
 import AdminSettingsForm from "@/components/admin/AdminSettingsForm";
 import { fetchCalBookings } from "@/lib/analytics";
+import { isConnected as googleIsConnected } from "@/lib/google";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,7 @@ export default async function AdminDashboard({
     : null;
 
   const lookerUrl = settings.looker_studio_url ?? "";
+  const googleConnected = tab === "impostazioni" ? await googleIsConnected() : false;
 
   const tabs = [
     { id: "sito", label: "Stato del sito", icon: BarChart3 },
@@ -265,11 +267,18 @@ export default async function AdminDashboard({
       {tab === "impostazioni" && (
         <AdminSettingsForm
           gtmId={settings.gtm_container_id ?? ""}
-          calApiKey={settings.cal_api_key ?? ""}
           lookerStudioUrl={settings.looker_studio_url ?? ""}
           iubendaScript={settings.iubenda_script ?? ""}
           iubendaPrivacyUrl={settings.iubenda_privacy_url ?? ""}
           iubendaCookieUrl={settings.iubenda_cookie_url ?? ""}
+          bookingDuration={settings.booking_duration ?? ""}
+          bookingBuffer={settings.booking_buffer ?? ""}
+          bookingStart={settings.booking_start ?? ""}
+          bookingEnd={settings.booking_end ?? ""}
+          bookingDays={settings.booking_days ?? ""}
+          bookingLeadHours={settings.booking_lead_hours ?? ""}
+          bookingEmails={settings.booking_emails ?? ""}
+          googleConnected={googleConnected}
           socialInstagram={settings.social_instagram ?? ""}
           socialFacebook={settings.social_facebook ?? ""}
           socialLinkedin={settings.social_linkedin ?? ""}

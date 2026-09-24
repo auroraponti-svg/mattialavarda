@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MapPin, Phone, Mail, MessageCircle, CalendarDays } from "lucide-react";
 import { site } from "@/lib/site";
-import CalBooking from "@/components/CalBooking";
+import Booking from "@/components/Booking";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
 import BusinessCard from "@/components/BusinessCard";
@@ -123,7 +123,7 @@ export default function Contatti() {
             </p>
           </Reveal>
           <Reveal delay={160}>
-            <CalBooking />
+            <Booking />
           </Reveal>
         </div>
       </section>
