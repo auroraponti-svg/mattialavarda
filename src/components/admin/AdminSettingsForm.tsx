@@ -256,6 +256,7 @@ export default function AdminSettingsForm({
             <label className="block text-xs font-medium text-navy/70 mb-1">Email di conferma</label>
             <select value={bkEmails} onChange={e => setBkEmails(e.target.value)} className={inputClass}>
               <option value="all">Al paziente e a Mattia</option>
+              <option value="patient">Solo al paziente</option>
               <option value="owner">Solo a Mattia</option>
             </select>
           </div>

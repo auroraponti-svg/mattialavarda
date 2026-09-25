@@ -5,7 +5,7 @@ import { DEFAULT_CONFIG, type BookingConfig } from "./booking";
 // Non sono segreti (durata, orari, buffer…), quindi client pubblico + cache.
 export async function loadBookingConfig(): Promise<{
   config: BookingConfig;
-  sendEmails: boolean;
+  emailMode: EmailMode;
   calendarId: string;
 }> {
   const supabase = createPublicClient(30);
@@ -42,7 +42,13 @@ export async function loadBookingConfig(): Promise<{
 
   return {
     config,
-    sendEmails: (s.booking_emails ?? "all") !== "owner",
+    emailMode: normalizeEmailMode(s.booking_emails),
     calendarId: s.booking_calendar_id || "primary",
   };
+}
+
+export type EmailMode = "all" | "patient" | "owner";
+
+function normalizeEmailMode(v: string | undefined): EmailMode {
+  return v === "patient" || v === "owner" ? v : "all";
 }

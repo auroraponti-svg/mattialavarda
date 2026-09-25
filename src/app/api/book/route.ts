@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { generateSlots, dayBoundsUtc, type BusyRange } from "@/lib/booking";
 import { loadBookingConfig } from "@/lib/bookingSettings";
 import { getBusy, createEvent, isConnected } from "@/lib/google";
+import { site } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "not_connected" }, { status: 503 });
   }
 
-  const { config, sendEmails, calendarId } = await loadBookingConfig();
+  const { config, emailMode, calendarId } = await loadBookingConfig();
 
   // Ricontrollo che lo slot sia ancora libero (anti doppia prenotazione).
   let busy: BusyRange[] = [];
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
   try {
     const event = await createEvent(
       { name: name.trim(), email: email.trim(), phone, notes, startISO: slot.startISO, endISO: slot.endISO },
-      { calendarId, sendEmails }
+      { calendarId, emailMode, ownerEmail: site.email }
     );
     return NextResponse.json({ ok: true, eventId: event.id });
   } catch {

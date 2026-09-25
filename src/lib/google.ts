@@ -119,10 +119,13 @@ export type BookingDetails = {
   endISO: string;
 };
 
-// Crea l'evento sul calendario di Mattia e (se richiesto) invia le email.
+// Crea l'evento sul calendario di Mattia e invia le email secondo la modalità:
+//  - "all":     al paziente e a Mattia
+//  - "patient": solo al paziente
+//  - "owner":   solo a Mattia (evento sul suo calendario, nessuna email al paziente)
 export async function createEvent(
   details: BookingDetails,
-  opts: { calendarId?: string; sendEmails: boolean }
+  opts: { calendarId?: string; emailMode: "all" | "patient" | "owner"; ownerEmail?: string }
 ): Promise<{ id: string; htmlLink: string }> {
   const token = await getAccessToken();
   const calendarId = opts.calendarId || "primary";
@@ -136,18 +139,24 @@ export async function createEvent(
     .filter(Boolean)
     .join("\n");
 
+  const notifyPatient = opts.emailMode === "all" || opts.emailMode === "patient";
+  const attendees: { email: string }[] = [];
+  if (notifyPatient && details.email) attendees.push({ email: details.email });
+  // In "all" invitiamo anche Mattia: riceve l'email se il calendario di
+  // prenotazione è diverso dal suo account (se è il suo, Google lo ignora).
+  if (opts.emailMode === "all" && opts.ownerEmail) attendees.push({ email: opts.ownerEmail });
+
   const body = {
     summary: `Visita osteopatica – ${details.name}`,
     description,
     start: { dateTime: details.startISO, timeZone: "Europe/Rome" },
     end: { dateTime: details.endISO, timeZone: "Europe/Rome" },
-    attendees: opts.sendEmails && details.email ? [{ email: details.email }] : undefined,
+    attendees: attendees.length ? attendees : undefined,
     reminders: { useDefault: true },
   };
 
-  const url = `${CAL_BASE}/calendars/${encodeURIComponent(calendarId)}/events?sendUpdates=${
-    opts.sendEmails ? "all" : "none"
-  }`;
+  const sendUpdates = attendees.length ? "all" : "none";
+  const url = `${CAL_BASE}/calendars/${encodeURIComponent(calendarId)}/events?sendUpdates=${sendUpdates}`;
   const res = await fetch(url, {
     method: "POST",
     headers: {
