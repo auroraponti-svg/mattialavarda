@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail, ShieldCheck, Cookie } from "lucide-react";
+import { MapPin, Phone, Mail, ShieldCheck, Cookie, SlidersHorizontal } from "lucide-react";
 import { site } from "@/lib/site";
 import { createPublicClient } from "@/lib/supabase/public";
 
@@ -153,15 +153,25 @@ export default async function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-5">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/40 text-center sm:text-left">
-            &copy; {new Date().getFullYear()} {site.name} — Osteopata · P.IVA {site.vat}
-            <br className="sm:hidden" />
-            <span className="hidden sm:inline"> · </span>Tutti i diritti riservati.
-          </p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          {/* Dati legali obbligatori */}
+          <div className="text-xs text-white/45 text-center md:text-left leading-relaxed">
+            <p>
+              <span className="text-white/70 font-medium">{site.name}</span> — Osteopata · P.IVA {site.vat}
+            </p>
+            <p>{site.address}</p>
+            {site.order.number && (
+              <p>
+                Iscritto all&apos;{site.order.body}
+                {site.order.province ? ` di ${site.order.province}` : ""} — n. {site.order.number}
+              </p>
+            )}
+            <p className="mt-1">&copy; {new Date().getFullYear()} {site.name}. Tutti i diritti riservati.</p>
+          </div>
 
+          {/* Documenti GDPR + gestione consenso */}
           {(privacyUrl || cookieUrl) && (
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0">
               {privacyUrl && (
                 <a
                   href={privacyUrl}
@@ -184,6 +194,14 @@ export default async function Footer() {
                   Cookie Policy
                 </a>
               )}
+              {/* Riapre il pannello preferenze di iubenda (revoca/gestione consenso) */}
+              <button
+                type="button"
+                className="iubenda-cs-preferences-link inline-flex items-center gap-1.5 bg-white/10 text-white/80 text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-white/20 transition-colors cursor-pointer"
+              >
+                <SlidersHorizontal size={13} aria-hidden="true" />
+                Gestisci consenso
+              </button>
             </div>
           )}
         </div>

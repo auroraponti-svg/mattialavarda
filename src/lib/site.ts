@@ -10,6 +10,14 @@ export const site = {
   email: "mattialavarda.osteopata@gmail.com",
   // Partita IVA — obbligatoria nel footer.
   vat: "03835710124",
+  // Iscrizione obbligatoria all'Ordine TSRM e PSTRP. Compilare `number` (e la
+  // provincia dell'Ordine territoriale) col dato reale: la riga nel footer
+  // compare solo quando il numero è valorizzato.
+  order: {
+    body: "Ordine TSRM e PSTRP",
+    province: "", // es. "Varese"
+    number: "", // es. "1234"
+  },
   // Sostituire con l'username reale di Cal.com una volta creato l'account
   calUsername: "mattia-lavarda",
   // Account Instagram da creare
