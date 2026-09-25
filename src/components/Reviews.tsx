@@ -85,27 +85,26 @@ export default function Reviews({ carousel = false }: ReviewsProps) {
     <section className="py-20 px-4 sm:px-6 bg-mist">
       <div className="max-w-5xl mx-auto">
         <Reveal delay={0}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-navy mb-2">Cosa dicono i pazienti</h2>
-            <p className="text-navy/60 text-sm">Recensioni verificate su Google</p>
+          <div className="relative mb-12">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-navy mb-2">Cosa dicono i pazienti</h2>
+              <p className="text-navy/60 text-sm">Recensioni verificate su Google</p>
+            </div>
+            {reviewUrl && (
+              <div className="mt-5 flex justify-center md:mt-0 md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2">
+                <a
+                  href={reviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="press inline-flex items-center gap-1.5 bg-steel text-white font-semibold px-3.5 py-2 rounded-lg hover:bg-navy transition-colors shadow-sm text-xs"
+                >
+                  <PenLine size={14} aria-hidden="true" />
+                  Lascia una recensione
+                </a>
+              </div>
+            )}
           </div>
         </Reveal>
-
-        {reviewUrl && (
-          <Reveal delay={60}>
-            <div className="flex justify-center mb-10">
-              <a
-                href={reviewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="press inline-flex items-center gap-2 bg-steel text-white font-semibold px-6 py-3 rounded-xl hover:bg-navy transition-colors shadow-sm text-sm"
-              >
-                <PenLine size={16} aria-hidden="true" />
-                Lascia una recensione
-              </a>
-            </div>
-          </Reveal>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {useCarousel
