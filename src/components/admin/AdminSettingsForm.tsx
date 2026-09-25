@@ -23,6 +23,7 @@ type Props = {
   socialLinkedin: string;
   socialTiktok: string;
   socialYoutube: string;
+  googleReviewUrl: string;
 };
 
 const DAY_LABELS: { n: number; label: string }[] = [
@@ -49,6 +50,7 @@ export default function AdminSettingsForm({
   iubendaScript, iubendaPrivacyUrl, iubendaCookieUrl,
   bookingDuration, bookingBuffer, bookingStart, bookingEnd, bookingDays, bookingLeadHours, bookingEmails, googleConnected,
   socialInstagram, socialFacebook, socialLinkedin, socialTiktok, socialYoutube,
+  googleReviewUrl,
 }: Props) {
   const supabase = createClient();
 
@@ -81,6 +83,7 @@ export default function AdminSettingsForm({
   const [linkedin, setLinkedin] = useState(socialLinkedin);
   const [tiktok, setTiktok] = useState(socialTiktok);
   const [youtube, setYoutube] = useState(socialYoutube);
+  const [googleReview, setGoogleReview] = useState(googleReviewUrl);
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -106,6 +109,7 @@ export default function AdminSettingsForm({
       { key: "social_linkedin", value: linkedin.trim() },
       { key: "social_tiktok", value: tiktok.trim() },
       { key: "social_youtube", value: youtube.trim() },
+      { key: "google_review_url", value: googleReview.trim() },
     ];
     for (const u of updates) {
       await supabase.from("site_settings").upsert({ key: u.key, value: u.value, updated_at: new Date().toISOString() });
@@ -279,6 +283,14 @@ export default function AdminSettingsForm({
               <input value={value} onChange={e => set(e.target.value)} placeholder={placeholder} className={inputClass} />
             </div>
           ))}
+        </div>
+
+        <div className="pt-2 border-t border-navy/8">
+          <label className="block text-xs font-medium text-navy/70 mb-1">Google — link per lasciare una recensione</label>
+          <input value={googleReview} onChange={e => setGoogleReview(e.target.value)} placeholder="https://g.page/r/.../review" className={inputClass} />
+          <p className="text-xs text-navy/40 mt-1">
+            Google Business Profile → &quot;Chiedi recensioni&quot; → copia il link. Attiva il pulsante &quot;Lascia una recensione&quot; nella sezione recensioni del sito.
+          </p>
         </div>
       </div>
 

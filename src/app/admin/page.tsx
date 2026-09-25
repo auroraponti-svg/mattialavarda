@@ -284,6 +284,7 @@ export default async function AdminDashboard({
           socialLinkedin={settings.social_linkedin ?? ""}
           socialTiktok={settings.social_tiktok ?? ""}
           socialYoutube={settings.social_youtube ?? ""}
+          googleReviewUrl={settings.google_review_url ?? ""}
         />
       )}
     </div>

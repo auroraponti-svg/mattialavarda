@@ -101,7 +101,7 @@ export default function Reviews({ carousel = false }: ReviewsProps) {
                 className="press inline-flex items-center gap-2 bg-steel text-white font-semibold px-6 py-3 rounded-xl hover:bg-navy transition-colors shadow-sm text-sm"
               >
                 <PenLine size={16} aria-hidden="true" />
-                Scrivi una recensione
+                Lascia una recensione
               </a>
             </div>
           </Reveal>

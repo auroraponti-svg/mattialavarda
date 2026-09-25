@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export interface Review {
   author: string;
@@ -67,8 +68,25 @@ async function fetchGoogleReviews(): Promise<Review[]> {
   return reviews;
 }
 
+async function getReviewUrl(): Promise<string | null> {
+  // Priorità: link impostato dall'admin; in mancanza, variabile d'ambiente.
+  try {
+    const supabase = createPublicClient(60);
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "google_review_url")
+      .maybeSingle();
+    const fromDb = data?.value?.trim();
+    if (fromDb) return fromDb;
+  } catch {
+    // ignora: uso il fallback env
+  }
+  return process.env.GMB_REVIEW_URL?.trim() || null;
+}
+
 export async function GET() {
-  const reviewUrl = process.env.GMB_REVIEW_URL ?? null;
+  const reviewUrl = await getReviewUrl();
 
   try {
     const google = await fetchGoogleReviews();
