@@ -8,8 +8,8 @@ export const site = {
   phoneHref: "+393791254272",
   whatsapp: "393791254272",
   email: "mattialavarda.osteopata@gmail.com",
-  // Partita IVA — obbligatoria nel footer. Sostituire le X con il numero reale.
-  vat: "IT xxxxxxxxxxx",
+  // Partita IVA — obbligatoria nel footer.
+  vat: "03835710124",
   // Sostituire con l'username reale di Cal.com una volta creato l'account
   calUsername: "mattia-lavarda",
   // Account Instagram da creare
