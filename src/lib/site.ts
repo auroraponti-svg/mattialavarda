@@ -1,5 +1,7 @@
 export const site = {
   name: "Mattia Lavarda",
+  // Dominio principale del sito (usato per SEO, sitemap, link canonici).
+  url: "https://www.mattialavarda.it",
   role: "Osteopata · Chinesiologo",
   studio: "Radici di Loto — Studio di Psicologia e Psicoterapia",
   address: "Via Giuseppe Verdi 24, 21017 Samarate (VA) — presso Radici di Loto Studio di Psicologia e Psicoterapia",

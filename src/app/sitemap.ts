@@ -1,8 +1,9 @@
 import { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { site } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://mattialavarda.vercel.app";
+  const base = site.url;
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },

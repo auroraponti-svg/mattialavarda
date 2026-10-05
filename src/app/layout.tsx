@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleTagManager from "@/components/GoogleTagManager";
 import IubendaConsent from "@/components/IubendaConsent";
+import { site } from "@/lib/site";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -14,6 +15,7 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: "Mattia Lavarda — Osteopata | Samarate (VA)",
   description:
     "Mattia Lavarda, Osteopata e Chinesiologo. Studio a Samarate (Varese): trattamenti osteopatici personalizzati per dolori, postura, sport e benessere.",
