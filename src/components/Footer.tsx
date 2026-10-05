@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail, ShieldCheck, Cookie, SlidersHorizontal } from "lucide-react";
+import { Phone, Mail, ShieldCheck, Cookie, SlidersHorizontal } from "lucide-react";
 import { site } from "@/lib/site";
 import { createPublicClient } from "@/lib/supabase/public";
 
@@ -108,10 +108,6 @@ export default async function Footer() {
         <div>
           <h3 className="text-white font-semibold mb-3">Contatti</h3>
           <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-2">
-              <MapPin size={16} className="text-sky mt-0.5 shrink-0" aria-hidden="true" />
-              <span>{site.address}</span>
-            </li>
             <li className="flex items-center gap-2">
               <Phone size={16} className="text-sky shrink-0" aria-hidden="true" />
               <a href={`tel:${site.phoneHref}`} className="link-underline hover:text-sky transition-colors duration-200 cursor-pointer">
@@ -159,7 +155,6 @@ export default async function Footer() {
             <p>
               <span className="text-white/70 font-medium">{site.name}</span> — Osteopata · P.IVA {site.vat}
             </p>
-            <p>{site.address}</p>
             {site.order.number && (
               <p>
                 Iscritto all&apos;{site.order.body}

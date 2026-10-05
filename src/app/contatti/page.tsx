@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MapPin, Phone, Mail, MessageCircle, CalendarDays } from "lucide-react";
+import { Phone, Mail, MessageCircle, CalendarDays } from "lucide-react";
 import { site } from "@/lib/site";
 import Booking from "@/components/Booking";
 import ContactForm from "@/components/ContactForm";
@@ -9,7 +9,7 @@ import Reviews from "@/components/Reviews";
 
 export const metadata: Metadata = {
   title: "Contatti e Prenotazioni | Mattia Lavarda Osteopata",
-  description: `Prenota una visita osteopatica a Samarate (VA). Studio in ${site.address}. Telefono, WhatsApp ed email.`,
+  description: `Prenota una visita osteopatica a Samarate (VA) con Mattia Lavarda. Telefono, WhatsApp ed email.`,
 };
 
 export default function Contatti() {
@@ -31,18 +31,8 @@ export default function Contatti() {
 
       {/* Contatti */}
       <section className="px-4 sm:px-6 -mt-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            {
-              href: site.mapsLink,
-              target: "_blank",
-              icon: <MapPin size={22} className="text-steel mb-3" aria-hidden="true" />,
-              label: "Dove",
-              content: (
-                <p className="text-sm text-navy/60 mt-1">{site.address}</p>
-              ),
-              delay: 0,
-            },
             {
               href: `tel:${site.phoneHref}`,
               target: undefined,
@@ -88,22 +78,6 @@ export default function Contatti() {
       <Reveal delay={0} className="px-4 sm:px-6 mt-6">
         <div className="max-w-6xl mx-auto">
           <BusinessCard />
-        </div>
-      </Reveal>
-
-      {/* Mappa */}
-      <Reveal delay={0} className="px-4 sm:px-6 mt-6">
-        <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden border border-navy/10 shadow-sm">
-          <iframe
-            src={site.mapsEmbed}
-            title="Mappa dello studio a Samarate"
-            width="100%"
-            height="280"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            style={{ border: 0 }}
-            className="block"
-          />
         </div>
       </Reveal>
 
