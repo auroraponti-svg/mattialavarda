@@ -9,6 +9,7 @@ import { formatDate, type Post } from "@/lib/posts";
 import { LogoutButton, DeleteButton } from "@/components/admin/AdminActions";
 import { getSeoLevel, seoColors, seoLabels } from "@/lib/seo";
 import AdminSettingsForm from "@/components/admin/AdminSettingsForm";
+import SeoAudit from "@/components/admin/SeoAudit";
 import { fetchCalBookings } from "@/lib/analytics";
 import { isConnected as googleIsConnected } from "@/lib/google";
 
@@ -48,6 +49,7 @@ export default async function AdminDashboard({
     : null;
 
   const lookerUrl = settings.looker_studio_url ?? "";
+  const pagespeedConfigured = !!process.env.GOOGLE_PAGESPEED_API_KEY?.trim();
   const googleConnected = tab === "impostazioni" ? await googleIsConnected() : false;
 
   const tabs = [
@@ -115,6 +117,9 @@ export default async function AdminDashboard({
               </p>
             </div>
           </div>
+
+          {/* Analisi SEO reale con Google PageSpeed */}
+          <SeoAudit configured={pagespeedConfigured} />
 
           {/* Analytics: Looker Studio embed */}
           <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
