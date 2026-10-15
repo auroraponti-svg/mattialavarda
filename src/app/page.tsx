@@ -70,7 +70,7 @@ export default function Home() {
           <div className="flex-1 flex justify-center">
             <Reveal delay={200} immediate className="w-full max-w-md">
               <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-xl ring-1 ring-navy/10">
-                <Image src="/mattia.jpg" alt="Mattia Lavarda, osteopata, nel suo studio" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 28rem" />
+                <Image src="/hero-trattamento.webp" alt="Trattamento osteopatico sulla schiena" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 28rem" />
               </div>
             </Reveal>
           </div>
