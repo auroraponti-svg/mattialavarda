@@ -47,14 +47,8 @@ export default async function Blog() {
             <h1 className="text-4xl font-bold text-navy mb-4">Blog</h1>
           </Reveal>
           <Reveal delay={160}>
-            <p className="text-navy/60 max-w-2xl mx-auto">
-              Approfondimenti su osteopatia, postura, movimento e benessere, scritti da Mattia
-              Lavarda, osteopata e chinesiologo a Samarate (VA). Qui trovi consigli pratici e
-              basati sull&apos;evidenza per capire meglio il tuo corpo: dalle cause più comuni di
-              mal di schiena, cervicale e dolori articolari, al recupero dopo un infortunio
-              sportivo, fino alla prevenzione e al mantenimento del benessere quotidiano. Ogni
-              articolo nasce dall&apos;esperienza in studio e vuole aiutarti a fare scelte più
-              consapevoli per la tua salute.
+            <p className="text-navy/60 max-w-xl mx-auto">
+              Approfondimenti su osteopatia, postura, movimento e benessere.
             </p>
           </Reveal>
         </div>
@@ -107,6 +101,27 @@ export default async function Blog() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Testo informativo in fondo — utile alla SEO, non invadente */}
+      <section className="py-14 px-4 sm:px-6 border-t border-navy/10">
+        <div className="max-w-3xl mx-auto text-sm text-navy/55 leading-relaxed space-y-3">
+          <h2 className="text-base font-semibold text-navy/70">Il blog dell&apos;osteopata Mattia Lavarda</h2>
+          <p>
+            In questo blog Mattia Lavarda, osteopata e chinesiologo a Samarate (VA), raccoglie
+            consigli pratici e informazioni basate sull&apos;evidenza su osteopatia, postura,
+            movimento e benessere. Gli articoli nascono dall&apos;esperienza in studio e trattano i
+            disturbi più comuni di chi ci si rivolge: mal di schiena e lombalgia, cervicale e mal di
+            testa da tensione, dolori articolari, problemi posturali e infortuni sportivi.
+          </p>
+          <p>
+            L&apos;obiettivo è aiutarti a capire meglio il tuo corpo e a fare scelte più consapevoli
+            per la tua salute, spiegando quando un disturbo può trarre beneficio da un trattamento
+            osteopatico e come prevenirne la comparsa. Le informazioni degli articoli hanno scopo
+            divulgativo e non sostituiscono una valutazione professionale: per un consiglio adatto
+            al tuo caso, prenota una visita chiamando o scrivendo su WhatsApp.
+          </p>
         </div>
       </section>
     </>
