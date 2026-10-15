@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleTagManager from "@/components/GoogleTagManager";
+import AnalyticsCode from "@/components/AnalyticsCode";
 import IubendaConsent from "@/components/IubendaConsent";
 import { site } from "@/lib/site";
 
@@ -38,6 +39,7 @@ export default function RootLayout({
         <Footer />
         <Analytics />
         <GoogleTagManager />
+        <AnalyticsCode />
         <IubendaConsent />
       </body>
     </html>

@@ -267,10 +267,11 @@ export default async function AdminDashboard({
       {tab === "impostazioni" && (
         <AdminSettingsForm
           gtmId={settings.gtm_container_id ?? ""}
+          analyticsCode={settings.analytics_code ?? ""}
           lookerStudioUrl={settings.looker_studio_url ?? ""}
-          iubendaScript={settings.iubenda_script ?? ""}
-          iubendaPrivacyUrl={settings.iubenda_privacy_url ?? ""}
-          iubendaCookieUrl={settings.iubenda_cookie_url ?? ""}
+          iubendaPrivacyEmbed={settings.iubenda_privacy_embed ?? ""}
+          iubendaCookieEmbed={settings.iubenda_cookie_embed ?? ""}
+          iubendaCsEmbed={settings.iubenda_cs_embed ?? ""}
           bookingDuration={settings.booking_duration ?? ""}
           bookingBuffer={settings.booking_buffer ?? ""}
           bookingStart={settings.booking_start ?? ""}

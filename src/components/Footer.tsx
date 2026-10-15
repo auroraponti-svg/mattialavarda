@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, ShieldCheck, Cookie, SlidersHorizontal } from "lucide-react";
+import { Phone, Mail, SlidersHorizontal } from "lucide-react";
 import { site } from "@/lib/site";
 import { createPublicClient } from "@/lib/supabase/public";
+import IubendaEmbed from "@/components/IubendaEmbed";
 
 function InstagramIcon() {
   return (
@@ -61,8 +62,8 @@ export default async function Footer() {
   );
 
   const activeSocials = socialConfig.filter(({ key }) => settings[key]);
-  const privacyUrl = settings["iubenda_privacy_url"];
-  const cookieUrl = settings["iubenda_cookie_url"];
+  const privacyEmbed = settings["iubenda_privacy_embed"];
+  const cookieEmbed = settings["iubenda_cookie_embed"];
 
   return (
     <footer className="bg-navy text-white/80 mt-auto">
@@ -164,31 +165,11 @@ export default async function Footer() {
             <p className="mt-1">&copy; {new Date().getFullYear()} {site.name}. Tutti i diritti riservati.</p>
           </div>
 
-          {/* Documenti GDPR + gestione consenso */}
-          {(privacyUrl || cookieUrl) && (
-            <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0">
-              {privacyUrl && (
-                <a
-                  href={privacyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="inline-flex items-center gap-1.5 bg-white/95 text-navy text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-white transition-colors cursor-pointer"
-                >
-                  <ShieldCheck size={13} className="text-steel" aria-hidden="true" />
-                  Privacy Policy
-                </a>
-              )}
-              {cookieUrl && (
-                <a
-                  href={cookieUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="inline-flex items-center gap-1.5 bg-white/95 text-navy text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-white transition-colors cursor-pointer"
-                >
-                  <Cookie size={13} className="text-steel" aria-hidden="true" />
-                  Cookie Policy
-                </a>
-              )}
+          {/* Documenti GDPR + gestione consenso (codici iubenda) */}
+          {(privacyEmbed || cookieEmbed) && (
+            <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0 iubenda-footer">
+              {privacyEmbed && <IubendaEmbed html={privacyEmbed} />}
+              {cookieEmbed && <IubendaEmbed html={cookieEmbed} />}
               {/* Riapre il pannello preferenze di iubenda (revoca/gestione consenso) */}
               <button
                 type="button"

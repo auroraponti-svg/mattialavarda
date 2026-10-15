@@ -11,7 +11,7 @@ export default async function IubendaConsent() {
     const { data } = await supabase
       .from("site_settings")
       .select("value")
-      .eq("key", "iubenda_script")
+      .eq("key", "iubenda_cs_embed")
       .maybeSingle();
     script = data?.value?.trim();
   } catch {

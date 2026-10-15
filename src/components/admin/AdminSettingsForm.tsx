@@ -6,10 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   gtmId: string;
+  analyticsCode: string;
   lookerStudioUrl: string;
-  iubendaScript: string;
-  iubendaPrivacyUrl: string;
-  iubendaCookieUrl: string;
+  iubendaPrivacyEmbed: string;
+  iubendaCookieEmbed: string;
+  iubendaCsEmbed: string;
   bookingDuration: string;
   bookingBuffer: string;
   bookingStart: string;
@@ -46,8 +47,8 @@ function SectionHeader({ icon: Icon, title, description }: { icon: React.Element
 }
 
 export default function AdminSettingsForm({
-  gtmId, lookerStudioUrl,
-  iubendaScript, iubendaPrivacyUrl, iubendaCookieUrl,
+  gtmId, analyticsCode, lookerStudioUrl,
+  iubendaPrivacyEmbed, iubendaCookieEmbed, iubendaCsEmbed,
   bookingDuration, bookingBuffer, bookingStart, bookingEnd, bookingDays, bookingLeadHours, bookingEmails, googleConnected,
   socialInstagram, socialFacebook, socialLinkedin, socialTiktok, socialYoutube,
   googleReviewUrl,
@@ -55,10 +56,11 @@ export default function AdminSettingsForm({
   const supabase = createClient();
 
   const [gtm, setGtm] = useState(gtmId);
+  const [analytics, setAnalytics] = useState(analyticsCode);
   const [looker, setLooker] = useState(lookerStudioUrl);
-  const [iubScript, setIubScript] = useState(iubendaScript);
-  const [iubPrivacy, setIubPrivacy] = useState(iubendaPrivacyUrl);
-  const [iubCookie, setIubCookie] = useState(iubendaCookieUrl);
+  const [iubPrivacy, setIubPrivacy] = useState(iubendaPrivacyEmbed);
+  const [iubCookie, setIubCookie] = useState(iubendaCookieEmbed);
+  const [iubCs, setIubCs] = useState(iubendaCsEmbed);
 
   const [bkDuration, setBkDuration] = useState(bookingDuration || "60");
   const [bkBuffer, setBkBuffer] = useState(bookingBuffer || "10");
@@ -93,6 +95,7 @@ export default function AdminSettingsForm({
     setSaving(true);
     const updates = [
       { key: "gtm_container_id", value: gtm.trim() },
+      { key: "analytics_code", value: analytics.trim() },
       { key: "looker_studio_url", value: looker.trim() },
       { key: "booking_duration", value: bkDuration.trim() },
       { key: "booking_buffer", value: bkBuffer.trim() },
@@ -101,9 +104,9 @@ export default function AdminSettingsForm({
       { key: "booking_days", value: bkDays.join(",") },
       { key: "booking_lead_hours", value: bkLead.trim() },
       { key: "booking_emails", value: bkEmails },
-      { key: "iubenda_script", value: iubScript.trim() },
-      { key: "iubenda_privacy_url", value: iubPrivacy.trim() },
-      { key: "iubenda_cookie_url", value: iubCookie.trim() },
+      { key: "iubenda_privacy_embed", value: iubPrivacy.trim() },
+      { key: "iubenda_cookie_embed", value: iubCookie.trim() },
+      { key: "iubenda_cs_embed", value: iubCs.trim() },
       { key: "social_instagram", value: instagram.trim() },
       { key: "social_facebook", value: facebook.trim() },
       { key: "social_linkedin", value: linkedin.trim() },
@@ -140,6 +143,20 @@ export default function AdminSettingsForm({
         </div>
 
         <div>
+          <label className="block text-xs font-medium text-navy/70 mb-1">Codice Google Analytics / Tag Google</label>
+          <textarea
+            value={analytics}
+            onChange={e => setAnalytics(e.target.value)}
+            placeholder={'Incolla qui l\'intero codice che ti dà Google (es. <!-- Google tag (gtag.js) --> <script async src="...gtag/js?id=G-XXXX"></script> <script>…</script>)'}
+            rows={5}
+            className={monoClass + " resize-y"}
+          />
+          <p className="text-xs text-navy/40 mt-1">
+            Incolla tutto il blocco di codice (non solo l&apos;ID): lo inserisco io nell&apos;&lt;head&gt; di ogni pagina per tracciare le visite. Puoi usare questo <strong>oppure</strong> GTM qui sopra, non serve entrambi.
+          </p>
+        </div>
+
+        <div>
           <label className="block text-xs font-medium text-navy/70 mb-1">Looker Studio — URL embed report</label>
           <input value={looker} onChange={e => setLooker(e.target.value)} placeholder="https://lookerstudio.google.com/embed/reporting/..." className={monoClass} />
           <p className="text-xs text-navy/40 mt-1">
@@ -154,34 +171,44 @@ export default function AdminSettingsForm({
         <SectionHeader
           icon={ShieldCheck}
           title="Privacy & Cookie (iubenda)"
-          description="Banner di consenso all'ingresso e link alle policy nel footer"
+          description="Incolla i 3 codici di incorporamento forniti da iubenda. Li gestisco io nel sito."
         />
 
         <div>
-          <label className="block text-xs font-medium text-navy/70 mb-1">Codice banner cookie</label>
+          <label className="block text-xs font-medium text-navy/70 mb-1">1. Privacy Policy — codice</label>
           <textarea
-            value={iubScript}
-            onChange={e => setIubScript(e.target.value)}
-            placeholder="Incolla qui il codice del banner cookie fornito da iubenda (i tag <script>…)"
-            rows={5}
+            value={iubPrivacy}
+            onChange={e => setIubPrivacy(e.target.value)}
+            placeholder={'<a href="https://www.iubenda.com/privacy-policy/..." class="iubenda-white iubenda-embed">Privacy Policy</a><script>…</script>'}
+            rows={4}
             className={monoClass + " resize-y"}
           />
-          <p className="text-xs text-navy/40 mt-1">
-            iubenda → il tuo sito → Cookie Solution → &quot;Incorpora&quot;. Incolla l&apos;intero blocco: il popup comparirà automaticamente all&apos;ingresso.
-          </p>
+          <p className="text-xs text-navy/40 mt-1">Diventa il pulsante &quot;Privacy Policy&quot; nel footer (apre la policy in un riquadro).</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-navy/70 mb-1">Link Privacy Policy</label>
-            <input value={iubPrivacy} onChange={e => setIubPrivacy(e.target.value)} placeholder="https://www.iubenda.com/privacy-policy/..." className={monoClass} />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-navy/70 mb-1">Link Cookie Policy</label>
-            <input value={iubCookie} onChange={e => setIubCookie(e.target.value)} placeholder="https://www.iubenda.com/privacy-policy/.../cookie-policy" className={monoClass} />
-          </div>
+        <div>
+          <label className="block text-xs font-medium text-navy/70 mb-1">2. Cookie Policy — codice</label>
+          <textarea
+            value={iubCookie}
+            onChange={e => setIubCookie(e.target.value)}
+            placeholder={'<a href="https://www.iubenda.com/privacy-policy/.../cookie-policy" class="iubenda-white iubenda-embed">Cookie Policy</a><script>…</script>'}
+            rows={4}
+            className={monoClass + " resize-y"}
+          />
+          <p className="text-xs text-navy/40 mt-1">Diventa il pulsante &quot;Cookie Policy&quot; nel footer.</p>
         </div>
-        <p className="text-xs text-navy/40">I due pulsanti compaiono nel footer solo quando i link sono inseriti.</p>
+
+        <div>
+          <label className="block text-xs font-medium text-navy/70 mb-1">3. Privacy Controls and Cookie Solution — codice</label>
+          <textarea
+            value={iubCs}
+            onChange={e => setIubCs(e.target.value)}
+            placeholder={'<script type="text/javascript" src="https://embeds.iubenda.com/widgets/....js"></script>'}
+            rows={3}
+            className={monoClass + " resize-y"}
+          />
+          <p className="text-xs text-navy/40 mt-1">È il banner di consenso: lo carico su tutte le pagine, compare all&apos;ingresso e gestisce i cookie.</p>
+        </div>
       </div>
 
       {/* ── Prenotazioni (Google Calendar) ── */}
