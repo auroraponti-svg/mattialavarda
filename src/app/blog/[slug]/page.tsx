@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { createPublicClient } from "@/lib/supabase/public";
@@ -19,6 +19,34 @@ async function getPost(slug: string): Promise<Post | null> {
     .eq("published", true)
     .maybeSingle();
   return (data as Post) ?? null;
+}
+
+// Articoli correlati: prima quelli della stessa categoria, poi i più recenti,
+// fino a 3. Serve anche a dare link interni a ogni articolo (SEO).
+async function getRelated(currentId: string, category: string): Promise<Post[]> {
+  const supabase = createPublicClient();
+  const { data: same } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("published", true)
+    .eq("category", category)
+    .neq("id", currentId)
+    .order("created_at", { ascending: false })
+    .limit(3);
+  let related = (same ?? []) as Post[];
+
+  if (related.length < 3) {
+    const { data: more } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("published", true)
+      .neq("id", currentId)
+      .order("created_at", { ascending: false })
+      .limit(6);
+    const extra = ((more ?? []) as Post[]).filter((p) => !related.some((r) => r.id === p.id));
+    related = [...related, ...extra].slice(0, 3);
+  }
+  return related;
 }
 
 export async function generateMetadata({
@@ -67,6 +95,8 @@ export default async function PostPage({
   const post = await getPost(slug);
   if (!post) notFound();
 
+  const related = await getRelated(post.id, post.category);
+
   // Il titolo della pagina è già in <h1>. Se il contenuto dell'articolo usa
   // titoli "# " (h1), si creerebbero più H1 nella stessa pagina (male per la
   // SEO): li abbassiamo a "## " (h2), lasciando intatti ## e ### esistenti.
@@ -97,6 +127,55 @@ export default async function PostPage({
         <div className="prose-content">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         </div>
+
+        {/* Articoli correlati — migliora navigazione e link interni */}
+        {related.length > 0 && (
+          <aside className="mt-16 pt-10 border-t border-navy/10">
+            <h2 className="text-xl font-bold text-navy mb-6">Articoli correlati</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {related.map((a) => (
+                <article
+                  key={a.id}
+                  className="lift flex flex-col bg-white rounded-xl shadow-sm border border-navy/10 hover:shadow-md hover:border-steel/30 overflow-hidden"
+                >
+                  <Link href={`/blog/${a.slug}`} className="block">
+                    <div className="relative h-32 bg-mist">
+                      {a.cover_image ? (
+                        <Image
+                          src={a.cover_image}
+                          alt={a.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width:768px) 100vw, 15rem"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-steel/30 text-xs">
+                          Mattia Lavarda · Osteopata
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                  <div className="p-4 flex flex-col flex-1">
+                    <span className="text-xs font-semibold text-steel bg-steel/10 px-2 py-0.5 rounded-full w-fit mb-2">
+                      {a.category}
+                    </span>
+                    <h3 className="font-semibold text-navy text-sm leading-snug mb-3">
+                      <Link href={`/blog/${a.slug}`} className="hover:text-steel transition-colors cursor-pointer">
+                        {a.title}
+                      </Link>
+                    </h3>
+                    <Link
+                      href={`/blog/${a.slug}`}
+                      className="text-xs font-semibold text-steel hover:text-navy transition-colors flex items-center gap-1 mt-auto"
+                    >
+                      Leggi <ArrowRight size={13} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </aside>
+        )}
       </div>
     </article>
   );

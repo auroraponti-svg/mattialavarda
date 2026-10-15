@@ -20,7 +20,9 @@ export default function StructuredData() {
     email: site.email,
     priceRange: "€€",
     vatID: site.vat,
-    medicalSpecialty: "PhysicalTherapy",
+    // Valore valido dell'enumerazione schema.org MedicalSpecialty
+    // (adatto all'osteopatia, che agisce sull'apparato muscoloscheletrico).
+    medicalSpecialty: "Musculoskeletal",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Samarate",

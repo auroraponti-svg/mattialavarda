@@ -107,9 +107,14 @@ export default function Contatti() {
             </div>
           </Reveal>
           <Reveal delay={80}>
-            <p className="text-navy/60 text-center mb-8 max-w-xl mx-auto">
-              Scegli giorno e orario tra le disponibilità. Riceverai una email di conferma con la possibilità
-              di salvare l&apos;appuntamento nel tuo calendario.
+            <p className="text-navy/60 text-center mb-8 max-w-2xl mx-auto">
+              Scegli giorno e orario tra le disponibilità: riceverai una email di conferma con la
+              possibilità di salvare l&apos;appuntamento nel tuo calendario. La prima seduta dura circa
+              un&apos;ora e comprende un colloquio iniziale, la valutazione del movimento e il primo
+              trattamento. Non serve l&apos;impegnativa del medico: l&apos;osteopatia è una disciplina
+              a libero accesso. Se hai referti, esami o lastre recenti, portali con te: aiutano a
+              inquadrare meglio la tua situazione. Per qualsiasi dubbio prima di prenotare, scrivimi
+              pure su WhatsApp o via email: rispondo di norma in giornata.
             </p>
           </Reveal>
           <Reveal delay={160}>
