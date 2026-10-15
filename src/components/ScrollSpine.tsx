@@ -30,6 +30,8 @@ export default function ScrollSpine() {
       src="/spine.svg"
       alt=""
       aria-hidden="true"
+      loading="lazy"
+      decoding="async"
       className="fixed pointer-events-none select-none hidden lg:block"
       style={{
         right: 0,

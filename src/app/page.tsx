@@ -118,11 +118,12 @@ export default function Home() {
           <Reveal delay={120}>
             <div className="mt-10 rounded-2xl overflow-hidden shadow-lg ring-1 ring-navy/10">
               <Image
-                src="/immagine-home.svg"
+                src="/immagine-home.webp"
                 alt="Approccio osteopatico"
-                width={800}
-                height={500}
+                width={1000}
+                height={572}
                 className="w-full h-auto"
+                sizes="(max-width: 896px) 100vw, 896px"
               />
             </div>
           </Reveal>
