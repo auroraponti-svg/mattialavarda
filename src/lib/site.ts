@@ -9,7 +9,7 @@ export const site = {
   phone: "+39 379 125 4272",
   phoneHref: "+393791254272",
   whatsapp: "393791254272",
-  email: "mattialavarda.osteopata@gmail.com",
+  email: "info@mattialavarda.it",
   // Partita IVA — obbligatoria nel footer.
   vat: "03835710124",
   // Iscrizione obbligatoria all'Ordine TSRM e PSTRP. Compilare `number` (e la

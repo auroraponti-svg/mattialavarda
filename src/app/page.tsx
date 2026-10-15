@@ -137,7 +137,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Pronto a stare meglio?</h2>
           <p className="text-white/80 mb-8">
-            Prenota il tuo appuntamento allo studio di Samarate. Scegli giorno e orario in base alle disponibilità.
+            Contattami per fissare il tuo appuntamento allo studio di Samarate: ti rispondo per telefono o su WhatsApp.
           </p>
           <Link
             href="/contatti"

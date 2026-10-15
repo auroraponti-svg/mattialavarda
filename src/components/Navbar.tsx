@@ -66,7 +66,7 @@ export default function Navbar() {
           ))}
           <li>
             <Link
-              href="/contatti#prenotazione"
+              href="/contatti"
               className={`press text-sm font-semibold px-4 py-2 rounded-lg cursor-pointer transition-colors ${
                 prenotaActive
                   ? "bg-navy text-white"
@@ -105,7 +105,7 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/contatti#prenotazione"
+            href="/contatti"
             onClick={() => setOpen(false)}
             className="bg-steel text-white text-sm font-semibold px-4 py-2 rounded-lg text-center hover:bg-navy transition-colors duration-200 cursor-pointer"
           >

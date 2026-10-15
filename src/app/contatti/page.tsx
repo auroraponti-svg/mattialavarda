@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Phone, Mail, MessageCircle, CalendarDays } from "lucide-react";
+import { Phone, Mail, MessageCircle } from "lucide-react";
 import { site } from "@/lib/site";
-import Booking from "@/components/Booking";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
 import BusinessCard from "@/components/BusinessCard";
@@ -33,13 +32,8 @@ export default function Contatti() {
             <h1 className="text-4xl font-bold text-navy mb-3">Contatti e prenotazioni</h1>
           </Reveal>
           <Reveal delay={90}>
-            <p className="text-navy/60 max-w-2xl mx-auto">
-              Tutti i riferimenti per prenotare un trattamento osteopatico a Samarate (VA) in un
-              unico posto. Puoi scrivermi su WhatsApp, chiamarmi o inviarmi un&apos;email: ti
-              risponderò per fissare insieme giorno e orario in base alle disponibilità. La prima
-              seduta comprende una valutazione completa per capire la causa del tuo disturbo e
-              costruire un percorso su misura. Se preferisci, puoi anche scegliere direttamente
-              una fascia oraria libera dal calendario di prenotazione qui sotto.
+            <p className="text-navy/60 max-w-lg mx-auto">
+              Per prenotare un trattamento, chiamami o scrivimi su WhatsApp: ti rispondo il prima possibile.
             </p>
           </Reveal>
         </div>
@@ -97,28 +91,35 @@ export default function Contatti() {
         </div>
       </Reveal>
 
-      {/* Prenotazione */}
-      <section id="prenotazione" className="py-16 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto">
+      {/* Come prenotare — telefono/WhatsApp (prenotazione online disattivata per ora) */}
+      <section className="py-14 px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto text-center">
           <Reveal delay={0}>
-            <div className="flex items-center gap-2 justify-center mb-2">
-              <CalendarDays size={22} className="text-steel" aria-hidden="true" />
-              <h2 className="text-2xl font-bold text-navy text-center">Prenota online</h2>
-            </div>
+            <h2 className="text-2xl font-bold text-navy mb-3">Come prenotare</h2>
           </Reveal>
           <Reveal delay={80}>
-            <p className="text-navy/60 text-center mb-8 max-w-2xl mx-auto">
-              Scegli giorno e orario tra le disponibilità: riceverai una email di conferma con la
-              possibilità di salvare l&apos;appuntamento nel tuo calendario. La prima seduta dura circa
-              un&apos;ora e comprende un colloquio iniziale, la valutazione del movimento e il primo
-              trattamento. Non serve l&apos;impegnativa del medico: l&apos;osteopatia è una disciplina
-              a libero accesso. Se hai referti, esami o lastre recenti, portali con te: aiutano a
-              inquadrare meglio la tua situazione. Per qualsiasi dubbio prima di prenotare, scrivimi
-              pure su WhatsApp o via email: rispondo di norma in giornata.
+            <p className="text-navy/60 mb-6">
+              Per fissare un appuntamento chiamami o scrivimi su WhatsApp: ti rispondo il prima
+              possibile per trovare insieme il giorno e l&apos;orario più comodi.
             </p>
           </Reveal>
-          <Reveal delay={160}>
-            <Booking />
+          <Reveal delay={140}>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={`tel:${site.phoneHref}`}
+                className="press inline-flex items-center gap-2 bg-steel text-white font-semibold px-6 py-3 rounded-lg hover:bg-navy transition-colors cursor-pointer"
+              >
+                <Phone size={18} aria-hidden="true" /> Chiama
+              </a>
+              <a
+                href={`https://wa.me/${site.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="press inline-flex items-center gap-2 bg-[#25D366] text-white font-semibold px-6 py-3 rounded-lg hover:brightness-95 transition cursor-pointer"
+              >
+                <MessageCircle size={18} aria-hidden="true" /> WhatsApp
+              </a>
+            </div>
           </Reveal>
         </div>
       </section>
@@ -137,6 +138,33 @@ export default function Contatti() {
           <Reveal delay={160} className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-navy/10">
             <ContactForm />
           </Reveal>
+        </div>
+      </section>
+
+      {/* Testo informativo in fondo — utile alla SEO, non invadente */}
+      <section className="py-14 px-4 sm:px-6 border-t border-navy/10">
+        <div className="max-w-3xl mx-auto text-sm text-navy/55 leading-relaxed space-y-3">
+          <h2 className="text-base font-semibold text-navy/70">Osteopata a Samarate (VA)</h2>
+          <p>
+            Mattia Lavarda è osteopata e chinesiologo e riceve a Samarate, in provincia di Varese,
+            a pochi minuti da Gallarate, Cardano al Campo, Ferno, Lonate Pozzolo e Busto Arsizio.
+            L&apos;osteopatia è una disciplina a libero accesso: non serve l&apos;impegnativa del
+            medico per prenotare una valutazione.
+          </p>
+          <p>
+            In studio mi occupo di dolori muscoloscheletrici (mal di schiena, cervicale, lombalgia,
+            dolori articolari), disfunzioni posturali, cefalee e tensioni, osteopatia sportiva,
+            recupero funzionale dopo un infortunio e benessere generale. Ogni percorso parte da una
+            valutazione accurata del movimento ed è costruito sulle esigenze della singola persona,
+            con un approccio che unisce le tecniche manuali dell&apos;osteopatia alle scienze motorie
+            e alla fisiologia dell&apos;esercizio.
+          </p>
+          <p>
+            Per prenotare un trattamento o chiedere informazioni puoi chiamare, scrivere su WhatsApp
+            o inviare un&apos;email: ti risponderò per fissare insieme il giorno e l&apos;orario più
+            comodi. Se hai referti, esami o lastre recenti, portali con te alla prima seduta: aiutano
+            a inquadrare meglio la tua situazione.
+          </p>
         </div>
       </section>
     </>
