@@ -6,10 +6,21 @@ import { site } from "@/lib/site";
 import Reveal from "@/components/Reveal";
 import Reviews from "@/components/Reviews";
 
+const title = "Chi Sono | Mattia Lavarda Osteopata";
+const description =
+  "Mattia Lavarda, osteopata e chinesiologo a Samarate. Formazione in Scienze Motorie e ricerca nella fisiologia dell'esercizio fisico.";
+
 export const metadata: Metadata = {
-  title: "Chi Sono | Mattia Lavarda Osteopata",
-  description:
-    "Mattia Lavarda, osteopata e chinesiologo a Samarate. Formazione in Scienze Motorie e ricerca nella fisiologia dell'esercizio fisico.",
+  title,
+  description,
+  alternates: { canonical: "/chi-sono" },
+  openGraph: {
+    type: "profile",
+    url: "/chi-sono",
+    title,
+    description,
+    images: ["/og-image.jpg"],
+  },
 };
 
 const valori = [

@@ -29,10 +29,32 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return { title: "Articolo non trovato" };
+
+  // Titolo senza suffisso lungo: i titoli degli articoli sono già descrittivi
+  // e il suffisso faceva superare la lunghezza consigliata per il tag <title>.
+  const title = post.meta_title || post.title;
+  const description = post.meta_description || post.excerpt || undefined;
+  const url = `/blog/${slug}`;
+  const ogImage = post.cover_image || "/og-image.jpg";
+
   return {
-    title: `${post.meta_title || post.title} | Blog Mattia Lavarda`,
-    description: post.meta_description || post.excerpt || undefined,
+    title,
+    description,
     keywords: post.keywords || undefined,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      url,
+      title,
+      description,
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
   };
 }
 
@@ -44,6 +66,11 @@ export default async function PostPage({
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) notFound();
+
+  // Il titolo della pagina è già in <h1>. Se il contenuto dell'articolo usa
+  // titoli "# " (h1), si creerebbero più H1 nella stessa pagina (male per la
+  // SEO): li abbassiamo a "## " (h2), lasciando intatti ## e ### esistenti.
+  const content = post.content.replace(/^#(?!#)\s/gm, "## ");
 
   return (
     <article className="py-16 px-4 sm:px-6">
@@ -68,7 +95,7 @@ export default async function PostPage({
         )}
 
         <div className="prose-content">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         </div>
       </div>
     </article>

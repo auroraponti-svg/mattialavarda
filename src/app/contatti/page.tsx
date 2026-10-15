@@ -7,9 +7,20 @@ import Reveal from "@/components/Reveal";
 import BusinessCard from "@/components/BusinessCard";
 import Reviews from "@/components/Reviews";
 
+const title = "Contatti e Prenotazioni | Mattia Lavarda Osteopata";
+const description = `Prenota una visita osteopatica a Samarate (VA) con Mattia Lavarda. Telefono, WhatsApp ed email.`;
+
 export const metadata: Metadata = {
-  title: "Contatti e Prenotazioni | Mattia Lavarda Osteopata",
-  description: `Prenota una visita osteopatica a Samarate (VA) con Mattia Lavarda. Telefono, WhatsApp ed email.`,
+  title,
+  description,
+  alternates: { canonical: "/contatti" },
+  openGraph: {
+    type: "website",
+    url: "/contatti",
+    title,
+    description,
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function Contatti() {
@@ -22,8 +33,13 @@ export default function Contatti() {
             <h1 className="text-4xl font-bold text-navy mb-3">Contatti e prenotazioni</h1>
           </Reveal>
           <Reveal delay={90}>
-            <p className="text-navy/60 max-w-lg mx-auto">
-              Tutti i riferimenti dello studio e la prenotazione online in un unico posto.
+            <p className="text-navy/60 max-w-2xl mx-auto">
+              Tutti i riferimenti per prenotare un trattamento osteopatico a Samarate (VA) in un
+              unico posto. Puoi scrivermi su WhatsApp, chiamarmi o inviarmi un&apos;email: ti
+              risponderò per fissare insieme giorno e orario in base alle disponibilità. La prima
+              seduta comprende una valutazione completa per capire la causa del tuo disturbo e
+              costruire un percorso su misura. Se preferisci, puoi anche scegliere direttamente
+              una fascia oraria libera dal calendario di prenotazione qui sotto.
             </p>
           </Reveal>
         </div>

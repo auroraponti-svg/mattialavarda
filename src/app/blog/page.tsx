@@ -6,9 +6,20 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { formatDate, type Post } from "@/lib/posts";
 import Reveal from "@/components/Reveal";
 
+const title = "Blog | Mattia Lavarda Osteopata";
+const description = "Articoli e consigli su osteopatia, postura, movimento e benessere da Mattia Lavarda, osteopata a Samarate.";
+
 export const metadata: Metadata = {
-  title: "Blog | Mattia Lavarda Osteopata",
-  description: "Articoli e consigli su osteopatia, postura, movimento e benessere da Mattia Lavarda, osteopata a Samarate.",
+  title,
+  description,
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    type: "website",
+    url: "/blog",
+    title,
+    description,
+    images: ["/og-image.jpg"],
+  },
 };
 
 export const revalidate = 60;
@@ -36,8 +47,14 @@ export default async function Blog() {
             <h1 className="text-4xl font-bold text-navy mb-4">Blog</h1>
           </Reveal>
           <Reveal delay={160}>
-            <p className="text-navy/60 max-w-xl mx-auto">
-              Approfondimenti su osteopatia, postura, movimento e benessere.
+            <p className="text-navy/60 max-w-2xl mx-auto">
+              Approfondimenti su osteopatia, postura, movimento e benessere, scritti da Mattia
+              Lavarda, osteopata e chinesiologo a Samarate (VA). Qui trovi consigli pratici e
+              basati sull&apos;evidenza per capire meglio il tuo corpo: dalle cause più comuni di
+              mal di schiena, cervicale e dolori articolari, al recupero dopo un infortunio
+              sportivo, fino alla prevenzione e al mantenimento del benessere quotidiano. Ogni
+              articolo nasce dall&apos;esperienza in studio e vuole aiutarti a fare scelte più
+              consapevoli per la tua salute.
             </p>
           </Reveal>
         </div>
