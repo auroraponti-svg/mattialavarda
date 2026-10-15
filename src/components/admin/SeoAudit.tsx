@@ -19,10 +19,13 @@ type Scores = {
   bestPractices: number | null;
 };
 type Suggestion = { title: string; category: string; displayValue?: string };
-type Result =
-  | { state: "loading" }
-  | { state: "error"; message: string }
-  | { state: "done"; scores: Scores; suggestions: Suggestion[]; fetchedAt: string };
+// Esito di una singola pagina.
+type PageResult =
+  | { ok: true; label: string; path: string; scores: Scores; suggestions: Suggestion[] }
+  | { ok: false; label: string; path: string; message: string };
+
+// Suggerimento aggregato su tutto il sito (con le pagine che lo presentano).
+type AggSuggestion = { title: string; category: string; displayValue?: string; pages: string[] };
 
 function scoreColor(v: number | null) {
   if (v === null) return "#94A3B8";
@@ -31,54 +34,58 @@ function scoreColor(v: number | null) {
   return "#DC2626";
 }
 
-function ScoreBadge({ label, value }: { label: string; value: number | null }) {
+function ScoreCircle({ label, value, big = false }: { label: string; value: number | null; big?: boolean }) {
+  const size = big ? "w-16 h-16 text-xl" : "w-9 h-9 text-xs";
   return (
-    <div className="flex flex-col items-center gap-1 px-2">
+    <div className="flex flex-col items-center gap-1">
       <div
-        className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold border-2"
+        className={`${size} rounded-full flex items-center justify-center font-bold border-2`}
         style={{ color: scoreColor(value), borderColor: scoreColor(value) }}
       >
         {value ?? "—"}
       </div>
-      <span className="text-[11px] text-navy/50 text-center leading-tight">{label}</span>
+      <span className={`${big ? "text-xs" : "text-[10px]"} text-navy/50 text-center leading-tight`}>
+        {label}
+      </span>
     </div>
   );
 }
 
+// Media dei punteggi non nulli.
+function avg(values: (number | null)[]): number | null {
+  const nums = values.filter((v): v is number => typeof v === "number");
+  if (nums.length === 0) return null;
+  return Math.round(nums.reduce((a, b) => a + b, 0) / nums.length);
+}
+
 export default function SeoAudit({ configured }: { configured: boolean }) {
   const [strategy, setStrategy] = useState<"mobile" | "desktop">("mobile");
-  const [results, setResults] = useState<Record<string, Result>>({});
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState<PageResult[] | null>(null);
+  const [fetchedAt, setFetchedAt] = useState<string | null>(null);
 
-  async function analyze(path: string) {
-    const full = site.url.replace(/\/$/, "") + path;
-    setResults((r) => ({ ...r, [path]: { state: "loading" } }));
-    try {
-      const res = await fetch(
-        `/api/seo-audit?url=${encodeURIComponent(full)}&strategy=${strategy}`
-      );
-      const data = await res.json();
-      if (!res.ok || data.error) {
-        setResults((r) => ({
-          ...r,
-          [path]: { state: "error", message: data.error || "Errore durante l'analisi." },
-        }));
-        return;
-      }
-      setResults((r) => ({
-        ...r,
-        [path]: {
-          state: "done",
-          scores: data.scores,
-          suggestions: data.suggestions ?? [],
-          fetchedAt: data.fetchedAt,
-        },
-      }));
-    } catch {
-      setResults((r) => ({
-        ...r,
-        [path]: { state: "error", message: "Connessione fallita." },
-      }));
-    }
+  async function analyzeAll() {
+    setLoading(true);
+    const results = await Promise.all(
+      PAGES.map(async ({ path, label }): Promise<PageResult> => {
+        const full = site.url.replace(/\/$/, "") + path;
+        try {
+          const res = await fetch(
+            `/api/seo-audit?url=${encodeURIComponent(full)}&strategy=${strategy}`
+          );
+          const data = await res.json();
+          if (!res.ok || data.error) {
+            return { ok: false, label, path, message: data.error || "Errore durante l'analisi." };
+          }
+          return { ok: true, label, path, scores: data.scores, suggestions: data.suggestions ?? [] };
+        } catch {
+          return { ok: false, label, path, message: "Connessione fallita." };
+        }
+      })
+    );
+    setDone(results);
+    setFetchedAt(new Date().toISOString());
+    setLoading(false);
   }
 
   if (!configured) {
@@ -99,118 +106,176 @@ export default function SeoAudit({ configured }: { configured: boolean }) {
     );
   }
 
+  const okResults = done?.filter((r): r is Extract<PageResult, { ok: true }> => r.ok) ?? [];
+
+  // Punteggi medi del sito.
+  const overall: Scores = {
+    seo: avg(okResults.map((r) => r.scores.seo)),
+    performance: avg(okResults.map((r) => r.scores.performance)),
+    accessibility: avg(okResults.map((r) => r.scores.accessibility)),
+    bestPractices: avg(okResults.map((r) => r.scores.bestPractices)),
+  };
+
+  // Suggerimenti aggregati: stesso titolo = un'unica voce, con l'elenco delle pagine.
+  const aggMap = new Map<string, AggSuggestion>();
+  for (const r of okResults) {
+    for (const s of r.suggestions) {
+      const existing = aggMap.get(s.title);
+      if (existing) {
+        if (!existing.pages.includes(r.label)) existing.pages.push(r.label);
+      } else {
+        aggMap.set(s.title, {
+          title: s.title,
+          category: s.category,
+          displayValue: s.displayValue,
+          pages: [r.label],
+        });
+      }
+    }
+  }
+  const aggSuggestions = Array.from(aggMap.values()).sort((a, b) => b.pages.length - a.pages.length);
+
   return (
     <div className="bg-white rounded-xl border border-navy/10 shadow-sm p-5">
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <h3 className="text-sm font-semibold text-navy flex items-center gap-2">
           <Gauge size={15} className="text-steel" /> Analisi SEO Google (PageSpeed)
         </h3>
-        {/* Scelta dispositivo */}
-        <div className="flex items-center gap-1 bg-mist rounded-lg p-0.5 text-xs">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Scelta dispositivo */}
+          <div className="flex items-center gap-1 bg-mist rounded-lg p-0.5 text-xs">
+            <button
+              type="button"
+              onClick={() => setStrategy("mobile")}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+                strategy === "mobile" ? "bg-white text-navy shadow-sm" : "text-navy/50"
+              }`}
+            >
+              <Smartphone size={12} /> Mobile
+            </button>
+            <button
+              type="button"
+              onClick={() => setStrategy("desktop")}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+                strategy === "desktop" ? "bg-white text-navy shadow-sm" : "text-navy/50"
+              }`}
+            >
+              <Monitor size={12} /> Desktop
+            </button>
+          </div>
+          {/* Pulsante unico: analizza tutto il sito */}
           <button
             type="button"
-            onClick={() => setStrategy("mobile")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
-              strategy === "mobile" ? "bg-white text-navy shadow-sm" : "text-navy/50"
-            }`}
+            onClick={analyzeAll}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 bg-steel text-white text-xs font-semibold px-3.5 py-1.5 rounded-md hover:bg-navy transition-colors disabled:opacity-50 cursor-pointer"
           >
-            <Smartphone size={12} /> Mobile
-          </button>
-          <button
-            type="button"
-            onClick={() => setStrategy("desktop")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
-              strategy === "desktop" ? "bg-white text-navy shadow-sm" : "text-navy/50"
-            }`}
-          >
-            <Monitor size={12} /> Desktop
+            <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
+            {loading ? "Analisi in corso…" : done ? "Rianalizza tutto" : "Analizza tutto il sito"}
           </button>
         </div>
       </div>
 
-      <div className="space-y-3">
-        {PAGES.map(({ path, label }) => {
-          const r = results[path];
-          return (
-            <div key={path} className="border border-navy/10 rounded-lg p-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-navy">{label}</p>
-                  <p className="text-xs text-navy/40 truncate">
-                    {site.url.replace(/\/$/, "") + path}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => analyze(path)}
-                  disabled={r?.state === "loading"}
-                  className="shrink-0 inline-flex items-center gap-1.5 bg-steel text-white text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-navy transition-colors disabled:opacity-50 cursor-pointer"
-                >
-                  <RefreshCw size={12} className={r?.state === "loading" ? "animate-spin" : ""} />
-                  {r?.state === "loading" ? "Analisi…" : r ? "Rianalizza" : "Analizza"}
-                </button>
+      {!done && !loading && (
+        <p className="text-sm text-navy/50">
+          Premi <strong>“Analizza tutto il sito”</strong> per lo stato SEO complessivo e i suggerimenti di Google.
+        </p>
+      )}
+
+      {loading && (
+        <p className="text-sm text-navy/50">
+          Google sta analizzando le {PAGES.length} pagine… può richiedere qualche decina di secondi.
+        </p>
+      )}
+
+      {done && (
+        <div className="space-y-5">
+          {/* Stato generale del sito */}
+          {okResults.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-navy/40 uppercase tracking-wide mb-2">
+                Stato generale del sito ({okResults.length}/{PAGES.length} pagine · media)
+              </p>
+              <div className="flex items-center justify-around bg-mist/50 rounded-lg py-4">
+                <ScoreCircle label="SEO" value={overall.seo} big />
+                <ScoreCircle label="Performance" value={overall.performance} big />
+                <ScoreCircle label="Accessibilità" value={overall.accessibility} big />
+                <ScoreCircle label="Best Practice" value={overall.bestPractices} big />
               </div>
+            </div>
+          )}
 
-              {r?.state === "error" && (
-                <p className="text-xs text-red-600 mt-2">{r.message}</p>
-              )}
-
-              {r?.state === "done" && (
-                <div className="mt-3">
-                  <div className="flex items-center justify-around bg-mist/50 rounded-lg py-2">
-                    <ScoreBadge label="SEO" value={r.scores.seo} />
-                    <ScoreBadge label="Performance" value={r.scores.performance} />
-                    <ScoreBadge label="Accessibilità" value={r.scores.accessibility} />
-                    <ScoreBadge label="Best Practice" value={r.scores.bestPractices} />
-                  </div>
-
-                  {r.suggestions.length > 0 ? (
-                    <div className="mt-3">
-                      <p className="text-xs font-semibold text-navy/60 mb-1.5">
-                        Suggerimenti di Google ({r.suggestions.length})
-                      </p>
-                      <ul className="space-y-1">
-                        {r.suggestions.map((s, i) => (
-                          <li key={i} className="text-xs text-navy/70 flex items-start gap-1.5">
-                            <span className="text-[10px] font-semibold text-steel bg-steel/10 rounded px-1 py-0.5 mt-0.5 shrink-0">
-                              {s.category}
-                            </span>
-                            <span>
-                              {s.title}
-                              {s.displayValue && (
-                                <span className="text-navy/40"> — {s.displayValue}</span>
-                              )}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+          {/* Dettaglio per pagina (compatto) */}
+          <div>
+            <p className="text-xs font-semibold text-navy/40 uppercase tracking-wide mb-2">
+              Dettaglio pagine
+            </p>
+            <div className="space-y-2">
+              {done.map((r) => (
+                <div
+                  key={r.path}
+                  className="flex items-center justify-between gap-3 border border-navy/10 rounded-lg px-3 py-2"
+                >
+                  <span className="text-sm font-semibold text-navy shrink-0">{r.label}</span>
+                  {r.ok ? (
+                    <div className="flex items-center gap-4">
+                      <ScoreCircle label="SEO" value={r.scores.seo} />
+                      <ScoreCircle label="Perf." value={r.scores.performance} />
+                      <ScoreCircle label="Access." value={r.scores.accessibility} />
+                      <ScoreCircle label="Best Pr." value={r.scores.bestPractices} />
                     </div>
                   ) : (
-                    <p className="text-xs text-green-600 mt-3">
-                      Nessun problema rilevante rilevato. 👍
-                    </p>
+                    <span className="text-xs text-red-600 text-right">{r.message}</span>
                   )}
-
-                  <a
-                    href={`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(
-                      site.url.replace(/\/$/, "") + path
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-steel hover:text-navy transition-colors mt-3"
-                  >
-                    Report completo su PageSpeed <ExternalLink size={11} />
-                  </a>
                 </div>
-              )}
+              ))}
             </div>
-          );
-        })}
-      </div>
+          </div>
+
+          {/* Suggerimenti complessivi */}
+          {aggSuggestions.length > 0 ? (
+            <div>
+              <p className="text-xs font-semibold text-navy/40 uppercase tracking-wide mb-2">
+                Suggerimenti di Google ({aggSuggestions.length})
+              </p>
+              <ul className="space-y-1.5">
+                {aggSuggestions.map((s, i) => (
+                  <li key={i} className="text-xs text-navy/70 flex items-start gap-2">
+                    <span className="text-[10px] font-semibold text-steel bg-steel/10 rounded px-1 py-0.5 mt-0.5 shrink-0">
+                      {s.category}
+                    </span>
+                    <span>
+                      {s.title}
+                      {s.displayValue && <span className="text-navy/40"> — {s.displayValue}</span>}
+                      <span className="text-navy/35">
+                        {" "}
+                        · {s.pages.length === PAGES.length ? "tutte le pagine" : s.pages.join(", ")}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            okResults.length > 0 && (
+              <p className="text-xs text-green-600">Nessun problema rilevante rilevato su tutto il sito. 👍</p>
+            )
+          )}
+
+          <a
+            href={`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(site.url)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-steel hover:text-navy transition-colors"
+          >
+            Apri il report completo su PageSpeed <ExternalLink size={11} />
+          </a>
+        </div>
+      )}
 
       <p className="text-[11px] text-navy/40 mt-4 leading-relaxed">
-        L&apos;analisi usa Google PageSpeed Insights sulle pagine pubbliche del sito. Perché
-        funzioni, il sito dev&apos;essere online e raggiungibile su {site.url.replace(/^https?:\/\//, "")}.
+        L&apos;analisi usa Google PageSpeed Insights sulle pagine pubbliche del sito. Perché funzioni, il
+        sito dev&apos;essere online e raggiungibile su {site.url.replace(/^https?:\/\//, "")}.
       </p>
     </div>
   );
