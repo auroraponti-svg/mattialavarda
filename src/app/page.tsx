@@ -27,20 +27,20 @@ export default function Home() {
         <HeroBackground />
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1">
-            <Reveal delay={90}>
+            <Reveal delay={90} immediate>
               <h1 className="text-4xl sm:text-5xl font-bold text-navy leading-tight mb-6">
                 Il movimento è salute,<br />
                 <span className="text-steel">l&apos;equilibrio è benessere</span>
               </h1>
             </Reveal>
-            <Reveal delay={180}>
+            <Reveal delay={180} immediate>
               <p className="text-navy/70 text-lg leading-relaxed mb-8 max-w-lg">
                 Sono <strong className="text-navy">Mattia Lavarda</strong>, osteopata e chinesiologo.
                 Aiuto le persone a ritrovare equilibrio e libertà di movimento attraverso trattamenti
                 osteopatici personalizzati e un approccio scientifico al corpo.
               </p>
             </Reveal>
-            <Reveal delay={260}>
+            <Reveal delay={260} immediate>
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/contatti"
@@ -56,7 +56,7 @@ export default function Home() {
                 </Link>
               </div>
             </Reveal>
-            <Reveal delay={340}>
+            <Reveal delay={340} immediate>
               <ul className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 text-sm text-navy/70">
                 {punti.map((item) => (
                   <li key={item} className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export default function Home() {
             </Reveal>
           </div>
           <div className="flex-1 flex justify-center">
-            <Reveal delay={200} className="w-full max-w-md">
+            <Reveal delay={200} immediate className="w-full max-w-md">
               <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-xl ring-1 ring-navy/10">
                 <Image src="/mattia.jpg" alt="Mattia Lavarda, osteopata, nel suo studio" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 28rem" />
               </div>

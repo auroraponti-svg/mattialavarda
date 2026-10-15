@@ -7,13 +7,18 @@ type Props = {
   delay?: number;
   className?: string;
   as?: "div" | "section" | "article" | "li";
+  // Per i contenuti sopra la piega (hero): rende l'elemento già visibile dal
+  // primo paint lato server, senza aspettare l'idratazione del JavaScript.
+  // Evita il ritardo di rendering dell'elemento LCP su mobile.
+  immediate?: boolean;
 };
 
-export default function Reveal({ children, delay = 0, className = "", as = "div" }: Props) {
+export default function Reveal({ children, delay = 0, className = "", as = "div", immediate = false }: Props) {
   const ref = useRef<HTMLElement | null>(null);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(immediate);
 
   useEffect(() => {
+    if (immediate) return;
     const el = ref.current;
     if (!el) return;
 
@@ -57,7 +62,7 @@ export default function Reveal({ children, delay = 0, className = "", as = "div"
       observer?.disconnect();
       clearTimeout(fallback);
     };
-  }, []);
+  }, [immediate]);
 
   const Tag = as as React.ElementType;
   return (
