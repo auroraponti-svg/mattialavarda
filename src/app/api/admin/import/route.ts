@@ -1,8 +1,8 @@
 import { randomBytes } from "crypto";
 import { NextResponse } from "next/server";
-import sharp from "sharp";
 import { guard } from "@/lib/adminSession";
 import { getAllPosts, replaceAll } from "@/lib/content";
+import { prepareImage } from "@/lib/content/image";
 import { ALLOWED_SETTING_KEYS } from "@/lib/content/settingsKeys";
 import { writeFile } from "@/lib/content/store";
 import type { Post } from "@/lib/posts";
@@ -40,35 +40,33 @@ export async function POST(request: Request) {
     // nessun corpo: si procede senza sovrascrivere
   }
 
-  // Evita di cancellare per sbaglio articoli già scritti nel nuovo sistema.
-  const existing = await getAllPosts();
-  if (existing.length > 0 && !overwrite) {
-    return NextResponse.json(
-      { error: `Nel nuovo sistema ci sono già ${existing.length} articoli. Importare di nuovo li sostituirebbe: conferma per procedere.`, needsConfirm: true },
-      { status: 409 }
-    );
-  }
-
+  // Tutto il lavoro sta in un unico blocco: qualunque errore diventa un messaggio leggibile.
   try {
+    // Evita di cancellare per sbaglio articoli già scritti nel nuovo sistema.
+    const existing = await getAllPosts();
+    if (existing.length > 0 && !overwrite) {
+      return NextResponse.json(
+        { error: `Nel nuovo sistema ci sono già ${existing.length} articoli. Importare di nuovo li sostituirebbe: conferma per procedere.`, needsConfirm: true },
+        { status: 409 }
+      );
+    }
+
     const [posts, settingRows] = await Promise.all([
       rest<Post[]>("posts", "select=*&order=created_at.asc"),
       rest<{ key: string; value: string }[]>("site_settings", "select=key,value"),
     ]);
 
-    // Immagini: copertine e immagini dentro i testi → WebP leggero nel nuovo archivio.
+    // Immagini: copertine e immagini dentro i testi → archivio nuovo (WebP leggero se possibile).
     const converted = new Map<string, string>();
     async function moveImage(url: string): Promise<string> {
       const done = converted.get(url);
       if (done) return done;
       const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Immagine non scaricabile: ${url}`);
-      const webp = await sharp(Buffer.from(await res.arrayBuffer()))
-        .rotate()
-        .resize({ width: 1600, withoutEnlargement: true })
-        .webp({ quality: 80 })
-        .toBuffer();
-      const name = `${Date.now()}-${randomBytes(6).toString("hex")}.webp`;
-      await writeFile(`media/${name}`, webp, "image/webp");
+      if (!res.ok) throw new Error(`Immagine non scaricabile (${res.status}): ${url.split("/").pop()}`);
+      const prepared = await prepareImage(Buffer.from(await res.arrayBuffer()));
+      if (!prepared) throw new Error(`File non riconosciuto come immagine: ${url.split("/").pop()}`);
+      const name = `${Date.now()}-${randomBytes(6).toString("hex")}.${prepared.ext}`;
+      await writeFile(`media/${name}`, prepared.data, prepared.contentType);
       const local = `/media/${name}`;
       converted.set(url, local);
       return local;
@@ -100,9 +98,8 @@ export async function POST(request: Request) {
       images: converted.size,
     });
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Importazione non riuscita." },
-      { status: 502 }
-    );
+    const message = e instanceof Error ? e.message.split("\n")[0] : "Importazione non riuscita.";
+    console.error("[import] errore:", message);
+    return NextResponse.json({ error: `Importazione non riuscita: ${message}` }, { status: 502 });
   }
 }
