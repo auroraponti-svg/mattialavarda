@@ -37,7 +37,9 @@ export async function getPublishedPosts(): Promise<Post[]> {
     return (await cachedPosts())
       .filter((p) => p.published)
       .sort((a, b) => b.created_at.localeCompare(a.created_at));
-  } catch {
+  } catch (e) {
+    // Visibile nei log di Vercel: senza questo un errore sembrerebbe "nessun articolo".
+    console.error("[content] lettura articoli non riuscita:", e instanceof Error ? e.message : e);
     return [];
   }
 }
@@ -49,7 +51,8 @@ export async function getPublishedPost(slug: string): Promise<Post | null> {
 export async function getSettings(): Promise<Settings> {
   try {
     return await cachedSettings();
-  } catch {
+  } catch (e) {
+    console.error("[content] lettura impostazioni non riuscita:", e instanceof Error ? e.message : e);
     return {};
   }
 }
