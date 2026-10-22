@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail, SlidersHorizontal } from "lucide-react";
 import { site } from "@/lib/site";
-import { createPublicClient } from "@/lib/supabase/public";
+import { getSettings } from "@/lib/content";
 import IubendaEmbed from "@/components/IubendaEmbed";
 
 function InstagramIcon() {
@@ -55,11 +55,7 @@ const socialConfig = [
 ];
 
 export default async function Footer() {
-  const supabase = createPublicClient();
-  const { data: settingsData } = await supabase.from("site_settings").select("key, value");
-  const settings = Object.fromEntries(
-    (settingsData ?? []).map((r: { key: string; value: string }) => [r.key, r.value])
-  );
+  const settings = await getSettings();
 
   const activeSocials = socialConfig.filter(({ key }) => settings[key]);
   const privacyEmbed = settings["iubenda_privacy_embed"];

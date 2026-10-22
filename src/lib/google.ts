@@ -1,8 +1,9 @@
-import { createAdminClient } from "./supabase/admin";
+import { deletePrivate, getPrivate, setPrivate } from "./content";
 import type { BusyRange } from "./booking";
 
 // Integrazione Google Calendar via OAuth2 (account personale Gmail di Mattia).
-// Il refresh token è salvato in private_settings (tabella non pubblica).
+// Il refresh token è salvato nell'archivio privato (content/private.json), che
+// le pagine pubbliche non leggono mai.
 // Nessuna libreria esterna: si usano gli endpoint REST di Google con fetch.
 
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -20,25 +21,15 @@ export function googleConfigured(): boolean {
 }
 
 export async function getRefreshToken(): Promise<string | null> {
-  const supabase = createAdminClient();
-  const { data } = await supabase
-    .from("private_settings")
-    .select("value")
-    .eq("key", REFRESH_KEY)
-    .maybeSingle();
-  return data?.value?.trim() || null;
+  return getPrivate(REFRESH_KEY);
 }
 
 export async function saveRefreshToken(token: string): Promise<void> {
-  const supabase = createAdminClient();
-  await supabase
-    .from("private_settings")
-    .upsert({ key: REFRESH_KEY, value: token, updated_at: new Date().toISOString() });
+  await setPrivate(REFRESH_KEY, token);
 }
 
 export async function clearRefreshToken(): Promise<void> {
-  const supabase = createAdminClient();
-  await supabase.from("private_settings").delete().eq("key", REFRESH_KEY);
+  await deletePrivate(REFRESH_KEY);
 }
 
 // true se il calendario è collegato (credenziali app presenti + refresh token salvato)

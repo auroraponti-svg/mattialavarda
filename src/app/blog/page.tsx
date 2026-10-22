@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { createPublicClient } from "@/lib/supabase/public";
-import { formatDate, type Post } from "@/lib/posts";
+import { getPublishedPosts } from "@/lib/content";
+import { formatDate } from "@/lib/posts";
 import Reveal from "@/components/Reveal";
 
 const title = "Blog | Mattia Lavarda Osteopata";
@@ -25,14 +25,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function Blog() {
-  const supabase = createPublicClient();
-  const { data } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("published", true)
-    .order("created_at", { ascending: false });
-
-  const articoli = (data ?? []) as Post[];
+  const articoli = await getPublishedPosts();
 
   return (
     <>

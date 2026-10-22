@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { getPublishedPosts } from "@/lib/content";
 import { site } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -12,13 +12,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/contatti`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
 
-  const supabase = await createClient();
-  const { data: posts } = await supabase
-    .from("posts")
-    .select("slug, updated_at")
-    .eq("published", true);
+  const posts = await getPublishedPosts();
 
-  const blogRoutes: MetadataRoute.Sitemap = (posts ?? []).map((p) => ({
+  const blogRoutes: MetadataRoute.Sitemap = posts.map((p) => ({
     url: `${base}/blog/${p.slug}`,
     lastModified: new Date(p.updated_at ?? new Date()),
     changeFrequency: "monthly",

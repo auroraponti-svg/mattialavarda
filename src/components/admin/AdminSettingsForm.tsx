@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Save, Loader2, CheckCircle2, Eye, EyeOff, ExternalLink, BarChart2, Calendar, Share2, Globe, ShieldCheck } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   gtmId: string;
@@ -53,8 +52,6 @@ export default function AdminSettingsForm({
   socialInstagram, socialFacebook, socialLinkedin, socialTiktok, socialYoutube,
   googleReviewUrl,
 }: Props) {
-  const supabase = createClient();
-
   const [gtm, setGtm] = useState(gtmId);
   const [analytics, setAnalytics] = useState(analyticsCode);
   const [looker, setLooker] = useState(lookerStudioUrl);
@@ -89,37 +86,50 @@ export default function AdminSettingsForm({
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [showSecrets, setShowSecrets] = useState(false);
 
   async function save() {
     setSaving(true);
-    const updates = [
-      { key: "gtm_container_id", value: gtm.trim() },
-      { key: "analytics_code", value: analytics.trim() },
-      { key: "looker_studio_url", value: looker.trim() },
-      { key: "booking_duration", value: bkDuration.trim() },
-      { key: "booking_buffer", value: bkBuffer.trim() },
-      { key: "booking_start", value: bkStart.trim() },
-      { key: "booking_end", value: bkEnd.trim() },
-      { key: "booking_days", value: bkDays.join(",") },
-      { key: "booking_lead_hours", value: bkLead.trim() },
-      { key: "booking_emails", value: bkEmails },
-      { key: "iubenda_privacy_embed", value: iubPrivacy.trim() },
-      { key: "iubenda_cookie_embed", value: iubCookie.trim() },
-      { key: "iubenda_cs_embed", value: iubCs.trim() },
-      { key: "social_instagram", value: instagram.trim() },
-      { key: "social_facebook", value: facebook.trim() },
-      { key: "social_linkedin", value: linkedin.trim() },
-      { key: "social_tiktok", value: tiktok.trim() },
-      { key: "social_youtube", value: youtube.trim() },
-      { key: "google_review_url", value: googleReview.trim() },
-    ];
-    for (const u of updates) {
-      await supabase.from("site_settings").upsert({ key: u.key, value: u.value, updated_at: new Date().toISOString() });
+    setSaveError("");
+    const values = {
+      gtm_container_id: gtm.trim(),
+      analytics_code: analytics.trim(),
+      looker_studio_url: looker.trim(),
+      booking_duration: bkDuration.trim(),
+      booking_buffer: bkBuffer.trim(),
+      booking_start: bkStart.trim(),
+      booking_end: bkEnd.trim(),
+      booking_days: bkDays.join(","),
+      booking_lead_hours: bkLead.trim(),
+      booking_emails: bkEmails,
+      iubenda_privacy_embed: iubPrivacy.trim(),
+      iubenda_cookie_embed: iubCookie.trim(),
+      iubenda_cs_embed: iubCs.trim(),
+      social_instagram: instagram.trim(),
+      social_facebook: facebook.trim(),
+      social_linkedin: linkedin.trim(),
+      social_tiktok: tiktok.trim(),
+      social_youtube: youtube.trim(),
+      google_review_url: googleReview.trim(),
+    };
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ values }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setSaveError(data.error || "Salvataggio non riuscito. Riprova.");
+      } else {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
+    } catch {
+      setSaveError("Connessione non riuscita. Riprova.");
     }
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   }
 
   const inputClass = "w-full rounded-lg border border-navy/15 px-3 py-2 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-steel/40 focus:border-steel transition";
@@ -353,6 +363,11 @@ export default function AdminSettingsForm({
           {showSecrets ? "Nascondi" : "Mostra"} chiavi segrete
         </button>
       </div>
+      {saveError && (
+        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2" role="alert">
+          {saveError}
+        </p>
+      )}
     </div>
   );
 }

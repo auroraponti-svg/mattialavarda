@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/client";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -16,10 +15,20 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setError("Email o password non corretti.");
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Accesso non riuscito. Riprova.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      setError("Connessione non riuscita. Riprova.");
       setLoading(false);
       return;
     }

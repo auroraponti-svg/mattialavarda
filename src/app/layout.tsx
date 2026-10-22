@@ -16,6 +16,10 @@ const figtree = Figtree({
   variable: "--font-figtree",
 });
 
+// Le pagine pubbliche si rigenerano al massimo ogni minuto (le modifiche dal
+// pannello comparivano comunque subito: il salvataggio svuota la cache).
+export const revalidate = 60;
+
 const siteTitle = "Mattia Lavarda — Osteopata | Samarate (VA)";
 const siteDescription =
   "Mattia Lavarda, Osteopata e Chinesiologo. Studio a Samarate (Varese): trattamenti osteopatici personalizzati per dolori, postura, sport e benessere.";
