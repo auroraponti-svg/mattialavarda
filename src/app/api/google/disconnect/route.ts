@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { guard } from "@/lib/adminSession";
 import { clearRefreshToken } from "@/lib/google";
 
 export const dynamic = "force-dynamic";
 
 // Scollega Google Calendar (rimuove il refresh token). Solo per admin loggato.
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const denied = await guard(request);
+  if (denied) return denied;
 
   try {
     await clearRefreshToken();

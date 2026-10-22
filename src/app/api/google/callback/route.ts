@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/adminSession";
 import { exchangeCodeForTokens, saveRefreshToken } from "@/lib/google";
 
 export const dynamic = "force-dynamic";
@@ -11,9 +11,7 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const error = url.searchParams.get("error");
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+  if (!(await isAdmin())) {
     return NextResponse.redirect(new URL("/admin/login", origin));
   }
 

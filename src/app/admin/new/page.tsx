@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import PostEditor from "@/components/admin/PostEditor";
+import { isAdmin } from "@/lib/adminSession";
 
 export const dynamic = "force-dynamic";
 
-export default function NewPost() {
+export default async function NewPost() {
+  if (!(await isAdmin())) redirect("/admin/login");
+
   return (
     <div className="py-12 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto mb-6">

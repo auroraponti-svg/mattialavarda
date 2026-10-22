@@ -1,11 +1,13 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   Plus, Pencil, CircleCheck, CircleDashed,
   BarChart3, FileText, TrendingUp, Settings,
   AlertTriangle, Users, Eye, CalendarDays, Clock, ExternalLink,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
-import { formatDate, type Post } from "@/lib/posts";
+import { isAdmin } from "@/lib/adminSession";
+import { getAllPosts, getSettingsFresh } from "@/lib/content";
+import { formatDate } from "@/lib/posts";
 import { LogoutButton, DeleteButton } from "@/components/admin/AdminActions";
 import { getSeoLevel, seoColors, seoLabels } from "@/lib/seo";
 import AdminSettingsForm from "@/components/admin/AdminSettingsForm";
@@ -24,18 +26,12 @@ export default async function AdminDashboard({
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
+  // Secondo controllo del login (il primo è nel proxy).
+  if (!(await isAdmin())) redirect("/admin/login");
+
   const { tab = "sito" } = await searchParams;
 
-  const supabase = await createClient();
-  const [{ data: postsData }, { data: settingsData }] = await Promise.all([
-    supabase.from("posts").select("*").order("created_at", { ascending: false }),
-    supabase.from("site_settings").select("key, value"),
-  ]);
-
-  const posts = (postsData ?? []) as Post[];
-  const settings = Object.fromEntries(
-    (settingsData ?? []).map((r: { key: string; value: string }) => [r.key, r.value])
-  );
+  const [posts, settings] = await Promise.all([getAllPosts(), getSettingsFresh()]);
 
   const published = posts.filter((p) => p.published).length;
   const drafts = posts.filter((p) => !p.published).length;

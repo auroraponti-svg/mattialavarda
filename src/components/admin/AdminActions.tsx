@@ -2,13 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { LogOut, Trash2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 export function LogoutButton() {
   const router = useRouter();
   async function logout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await fetch("/api/admin/logout", { method: "POST" });
     router.replace("/admin/login");
     router.refresh();
   }
@@ -26,8 +24,11 @@ export function DeleteButton({ id, title }: { id: string; title: string }) {
   const router = useRouter();
   async function remove() {
     if (!confirm(`Eliminare definitivamente "${title}"?`)) return;
-    const supabase = createClient();
-    await supabase.from("posts").delete().eq("id", id);
+    const res = await fetch(`/api/admin/posts/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      alert("Eliminazione non riuscita. Riprova.");
+      return;
+    }
     router.refresh();
   }
   return (

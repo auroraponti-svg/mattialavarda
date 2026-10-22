@@ -1,28 +1,14 @@
-import { createPublicClient } from "./supabase/public";
+import { getSettings } from "./content";
 import { DEFAULT_CONFIG, type BookingConfig } from "./booking";
 
-// Carica i parametri di prenotazione salvati dall'admin (site_settings).
-// Non sono segreti (durata, orari, buffer…), quindi client pubblico + cache.
+// Carica i parametri di prenotazione salvati dall'admin (impostazioni).
+// Non sono segreti (durata, orari, buffer…), quindi si leggono con la cache.
 export async function loadBookingConfig(): Promise<{
   config: BookingConfig;
   emailMode: EmailMode;
   calendarId: string;
 }> {
-  const supabase = createPublicClient(30);
-  const { data } = await supabase
-    .from("site_settings")
-    .select("key, value")
-    .in("key", [
-      "booking_duration",
-      "booking_buffer",
-      "booking_start",
-      "booking_end",
-      "booking_days",
-      "booking_lead_hours",
-      "booking_emails",
-      "booking_calendar_id",
-    ]);
-  const s = Object.fromEntries((data ?? []).map((r: { key: string; value: string }) => [r.key, r.value]));
+  const s = await getSettings();
 
   const num = (v: string | undefined, d: number) => {
     const n = Number(v);

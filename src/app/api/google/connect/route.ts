@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/adminSession";
 import { googleConfigured, GOOGLE_SCOPES } from "@/lib/google";
 
 export const dynamic = "force-dynamic";
 
 // Avvia l'autorizzazione Google. Solo per admin loggato.
 export async function GET(request: Request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
   const origin = new URL(request.url).origin;
 
-  if (!user) {
+  if (!(await isAdmin())) {
     return NextResponse.redirect(new URL("/admin/login", origin));
   }
   if (!googleConfigured()) {

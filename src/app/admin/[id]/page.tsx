@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import PostEditor from "@/components/admin/PostEditor";
-import { createClient } from "@/lib/supabase/server";
-import { type Post } from "@/lib/posts";
+import { isAdmin } from "@/lib/adminSession";
+import { getPostById } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
@@ -12,11 +12,11 @@ export default async function EditPost({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  if (!(await isAdmin())) redirect("/admin/login");
+
   const { id } = await params;
-  const supabase = await createClient();
-  const { data } = await supabase.from("posts").select("*").eq("id", id).maybeSingle();
-  if (!data) notFound();
-  const post = data as Post;
+  const post = await getPostById(id);
+  if (!post) notFound();
 
   return (
     <div className="py-12 px-4 sm:px-6">

@@ -5,48 +5,20 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { createPublicClient } from "@/lib/supabase/public";
+import { getPublishedPost, getPublishedPosts } from "@/lib/content";
 import { formatDate, type Post } from "@/lib/posts";
 
 export const revalidate = 60;
 
-async function getPost(slug: string): Promise<Post | null> {
-  const supabase = createPublicClient();
-  const { data } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("slug", slug)
-    .eq("published", true)
-    .maybeSingle();
-  return (data as Post) ?? null;
-}
+const getPost = getPublishedPost;
 
 // Articoli correlati: prima quelli della stessa categoria, poi i più recenti,
 // fino a 3. Serve anche a dare link interni a ogni articolo (SEO).
 async function getRelated(currentId: string, category: string): Promise<Post[]> {
-  const supabase = createPublicClient();
-  const { data: same } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("published", true)
-    .eq("category", category)
-    .neq("id", currentId)
-    .order("created_at", { ascending: false })
-    .limit(3);
-  let related = (same ?? []) as Post[];
-
-  if (related.length < 3) {
-    const { data: more } = await supabase
-      .from("posts")
-      .select("*")
-      .eq("published", true)
-      .neq("id", currentId)
-      .order("created_at", { ascending: false })
-      .limit(6);
-    const extra = ((more ?? []) as Post[]).filter((p) => !related.some((r) => r.id === p.id));
-    related = [...related, ...extra].slice(0, 3);
-  }
-  return related;
+  const others = (await getPublishedPosts()).filter((p) => p.id !== currentId);
+  const same = others.filter((p) => p.category === category);
+  const rest = others.filter((p) => p.category !== category);
+  return [...same, ...rest].slice(0, 3);
 }
 
 export async function generateMetadata({

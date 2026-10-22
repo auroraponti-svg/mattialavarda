@@ -4,15 +4,34 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ImagePlus, Loader2, Save, Eye, EyeOff } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { slugify, type Post } from "@/lib/posts";
+import { type Post } from "@/lib/posts";
 import SeoChecker from "@/components/admin/SeoChecker";
 
 const categorie = ["Generale", "Lombalgia", "Postura", "Sport", "Cefalee", "Benessere", "Info"];
 
+// Riduce la foto nel browser prima di inviarla (max 1600 px, WebP): così resta
+// sotto il limite di dimensione delle richieste e il caricamento è più rapido.
+// Se qualcosa non va si invia l'originale e ci pensa il server.
+async function shrinkImage(file: File): Promise<Blob> {
+  if (file.type === "image/gif") return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", 0.85)
+    );
+    return blob ?? file;
+  } catch {
+    return file;
+  }
+}
+
 export default function PostEditor({ post }: { post?: Post }) {
   const router = useRouter();
-  const supabase = createClient();
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const [title, setTitle] = useState(post?.title ?? "");
@@ -29,15 +48,20 @@ export default function PostEditor({ post }: { post?: Post }) {
   const [error, setError] = useState("");
 
   async function uploadImage(file: File): Promise<string | null> {
-    const ext = file.name.split(".").pop();
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from("blog-images").upload(path, file);
-    if (error) {
-      setError("Errore nel caricamento dell'immagine: " + error.message);
+    try {
+      const form = new FormData();
+      form.append("file", await shrinkImage(file), "immagine.webp");
+      const res = await fetch("/api/admin/media", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) {
+        setError("Errore nel caricamento dell'immagine: " + (data.error || "riprova."));
+        return null;
+      }
+      return data.url as string;
+    } catch {
+      setError("Errore nel caricamento dell'immagine: connessione non riuscita.");
       return null;
     }
-    const { data } = supabase.storage.from("blog-images").getPublicUrl(path);
-    return data.publicUrl;
   }
 
   async function handleCover(e: React.ChangeEvent<HTMLInputElement>) {
@@ -77,8 +101,8 @@ export default function PostEditor({ post }: { post?: Post }) {
     setError("");
 
     const payload = {
+      id: post?.id,
       title: title.trim(),
-      slug: post?.slug ?? slugify(title),
       category,
       excerpt: excerpt.trim(),
       content,
@@ -87,18 +111,22 @@ export default function PostEditor({ post }: { post?: Post }) {
       meta_title: metaTitle.trim() || null,
       meta_description: metaDescription.trim() || null,
       keywords: keywords.trim() || null,
-      updated_at: new Date().toISOString(),
     };
 
-    let res;
-    if (post) {
-      res = await supabase.from("posts").update(payload).eq("id", post.id);
-    } else {
-      res = await supabase.from("posts").insert(payload);
-    }
-
-    if (res.error) {
-      setError(res.error.message);
+    try {
+      const res = await fetch("/api/admin/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Salvataggio non riuscito. Riprova.");
+        setSaving(false);
+        return;
+      }
+    } catch {
+      setError("Connessione non riuscita. Riprova.");
       setSaving(false);
       return;
     }

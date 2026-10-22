@@ -1,21 +1,9 @@
 import Script from "next/script";
-import { createPublicClient } from "@/lib/supabase/public";
+import { getSetting } from "@/lib/content";
 
 export default async function GoogleTagManager() {
-  // Il DB Supabase su piano free può andare in pausa: se la query fallisce
-  // non deve far crashare il layout (e con esso ogni pagina del sito).
-  let id: string | undefined;
-  try {
-    const supabase = createPublicClient();
-    const { data } = await supabase
-      .from("site_settings")
-      .select("value")
-      .eq("key", "gtm_container_id")
-      .maybeSingle();
-    id = data?.value?.trim();
-  } catch {
-    return null;
-  }
+  // Se l'archivio non risponde getSetting ritorna vuoto: il sito non si rompe.
+  const id = (await getSetting("gtm_container_id"))?.trim();
 
   if (!id) return null;
 
