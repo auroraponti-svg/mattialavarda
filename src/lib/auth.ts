@@ -38,13 +38,19 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+// Nomi (mai i valori) delle variabili d'ambiente mancanti o non valide.
+export function missingAuthVars(): string[] {
+  const missing: string[] = [];
+  if (!process.env.ADMIN_EMAIL?.trim()) missing.push("ADMIN_EMAIL");
+  if (!process.env.ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) missing.push("SESSION_SECRET");
+  else if (secret.length < 32) missing.push("SESSION_SECRET (troppo corta: servono almeno 32 caratteri)");
+  return missing;
+}
+
 export function authConfigured(): boolean {
-  return Boolean(
-    process.env.ADMIN_EMAIL &&
-      process.env.ADMIN_PASSWORD &&
-      process.env.SESSION_SECRET &&
-      process.env.SESSION_SECRET.length >= 32
-  );
+  return missingAuthVars().length === 0;
 }
 
 export async function checkCredentials(email: string, password: string): Promise<boolean> {

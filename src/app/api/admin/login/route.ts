@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE, SESSION_DAYS, authConfigured, checkCredentials, createSessionToken } from "@/lib/auth";
+import { SESSION_COOKIE, SESSION_DAYS, checkCredentials, createSessionToken, missingAuthVars } from "@/lib/auth";
 import { clearFailures, clientKey, isBlocked, recordFailure } from "@/lib/adminSession";
 
 export const dynamic = "force-dynamic";
@@ -18,9 +18,12 @@ export async function POST(request: Request) {
   }
   if (!sameSite) return NextResponse.json({ error: "Richiesta non valida." }, { status: 403 });
 
-  if (!authConfigured()) {
+  const missing = missingAuthVars();
+  if (missing.length > 0) {
+    // Solo i nomi delle variabili mancanti, mai i valori: serve a capire cosa
+    // impostare su Vercel. Compare solo finché l'accesso non è configurato.
     return NextResponse.json(
-      { error: "Accesso non ancora configurato. Contatta chi gestisce il sito." },
+      { error: `Accesso non ancora configurato. Su Vercel mancano o non sono valide: ${missing.join(", ")}.` },
       { status: 503 }
     );
   }
