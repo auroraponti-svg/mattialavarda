@@ -2,6 +2,11 @@ import { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/content";
 import { site } from "@/lib/site";
 
+// Calcolata a ogni richiesta: gli articoli si pubblicano dal pannello, quindi l'elenco
+// non può restare quello fotografato al momento della costruzione del sito.
+// I dati vengono comunque letti dalla cache (60 secondi), senza pesare sull'archivio.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url;
 
